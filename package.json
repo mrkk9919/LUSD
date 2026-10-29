@@ -1,0 +1,23 @@
+{
+  "name": "lottery-stablecoin",
+  "version": "1.0.0",
+  "description": "Lottery platform stablecoin + voucher prototype (testnet only)",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "chai": "^4.3.10",
+    "ethers": "^6.13.0",
+    "hardhat": "^2.22.0",
+    "mocha": "^10.4.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
