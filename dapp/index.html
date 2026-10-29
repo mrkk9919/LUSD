@@ -135,6 +135,13 @@
   /* charts */
   .bigprice{font-size:40px;font-weight:800;letter-spacing:.5px;line-height:1.1}
   .bigchg{font-size:13px;color:var(--muted);margin-top:2px}
+  .pricesub{display:flex;align-items:center;gap:9px;margin-top:5px;flex-wrap:wrap}
+  .pricesub .bigchg{margin-top:0}
+  .pegpill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+    color:var(--green);background:rgba(183,255,26,.09);border:1px solid rgba(183,255,26,.28);
+    border-radius:999px;padding:3px 9px;white-space:nowrap}
+  .pegpill i{width:5px;height:5px;border-radius:50%;background:var(--green);flex:none;
+    animation:adpulse 2.2s infinite}
   .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin:14px 0 10px;font-size:12.5px}
   .statgrid .r{display:flex;justify-content:space-between;color:var(--muted)}
   .statgrid .r b{color:var(--text);font-weight:600}
@@ -655,21 +662,24 @@
   <!-- Charts -->
   <section class="tabpane on" id="tab-charts">
     <div class="bigprice num" id="bigPrice">$1.0000</div>
-    <div class="bigchg num" id="bigChg">0.00%</div>
+    <div class="pricesub">
+      <span class="bigchg num" id="bigChg">0.00%</span>
+      <span class="pegpill"><i></i>1 LUSD = 1.00 USD</span>
+    </div>
 
     <div class="statgrid">
-      <div class="r"><span>Market cap</span><b>$1.41B</b></div>
-      <div class="r"><span>Liquidity</span><b>$17.11M</b></div>
+      <div class="r"><span>Market cap</span><b>$12.48M</b></div>
+      <div class="r"><span>Liquidity</span><b>$7.92M</b></div>
       <div class="r"><span>24h volume</span><b>$1.48M</b></div>
-      <div class="r"><span>Holders</span><b>3.39M</b></div>
-      <div class="r"><span>Top 10</span><b style="color:var(--pink)">100%</b></div>
+      <div class="r"><span>Holders</span><b>3,392</b></div>
+      <div class="r"><span>Top 10</span><b>42.1%</b></div>
       <div class="r"><span>Supply</span><b>12.48M</b></div>
     </div>
 
     <div class="chips">
       <span class="chipx"><span class="feeslbl">ⓘ Fees</span> <b>0.30%</b></span>
-      <span class="chipx">Buy/Sell tax <b>0.5% / 0.5%</b></span>
-      <span class="chipx" style="color:var(--green);border-color:rgba(183,255,26,.35)">● 1:1 锚定 LUSD</span>
+      <span class="chipx">Buy/Sell tax <b>0.3% / 0.3%</b></span>
+      <span class="chipx" style="color:var(--green);border-color:rgba(183,255,26,.35)">● 1:1 锚定 USD</span>
     </div>
 
     <div class="tfrow" id="tfCharts">
@@ -743,13 +753,13 @@
     </div>
     <div class="fold" id="mktFold">
       <div class="card" style="padding:6px 16px;margin-top:0">
-        <div class="kv link" onclick="detail('Liquidity')"><span class="k">Liquidity</span><span class="v">$17.11M ›</span></div>
-        <div class="kv link" onclick="detail('Holders')"><span class="k">Holders</span><span class="v">3.39M ›</span></div>
-        <div class="kv"><span class="k">FDV</span><span class="v">$1.41B</span></div>
-        <div class="kv"><span class="k">Market cap</span><span class="v">$1.42B</span></div>
+        <div class="kv link" onclick="detail('Liquidity')"><span class="k">Liquidity</span><span class="v">$7.92M ›</span></div>
+        <div class="kv link" onclick="detail('Holders')"><span class="k">Holders</span><span class="v">3,392 ›</span></div>
+        <div class="kv"><span class="k">FDV</span><span class="v">$12.48M</span></div>
+        <div class="kv"><span class="k">Market cap</span><span class="v">$12.48M</span></div>
         <div class="kv link" onclick="detail('Buy / Sell tax')"><span class="k">Buy / Sell tax</span><span class="v">0.3% / 0.3% ›</span></div>
         <div class="kv link" onclick="goTab('risk')"><span class="k">Risk</span><span class="v" style="color:#ffb020">⚠ 1 ›</span></div>
-        <div class="kv"><span class="k">Circulating supply</span><span class="v">1.42B</span></div>
+        <div class="kv"><span class="k">Circulating supply</span><span class="v">12.48M</span></div>
         <div class="kv"><span class="k">Maximum supply</span><span class="v">∞</span></div>
         <div class="kv"><span class="k">Network</span><span class="v"><svg class="chainic" viewBox="0 0 32 32" width="13" height="13" aria-label="Base"><circle cx="16" cy="16" r="16" fill="#0052FF"/><path fill="#fff" d="M9.6 5.4h6.3a5.3 5.3 0 0 1 0 10.6H9.6z"/><path fill="#fff" d="M9.6 16.2h7.3a5.3 5.3 0 0 1 0 10.6H9.6z"/></svg> Base</span></div>
         <div class="kv"><span class="k">Creator</span><span class="v mono">0x7a3f…9c2e ⧉</span></div>
@@ -839,7 +849,7 @@
       <div class="card link" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between"
            onclick="detail('Total liquidity')">
         <span style="font-size:12px;color:var(--muted)">Total liquidity</span>
-        <span style="font-size:13.5px;font-weight:700">$17.11M <span style="color:var(--dim)">›</span></span>
+        <span style="font-size:13.5px;font-weight:700">$7.92M <span style="color:var(--dim)">›</span></span>
       </div>
 
       <div class="chiprow" id="liqFilter" style="margin-top:14px">
@@ -1144,7 +1154,7 @@ const I18N = {
  "⧉ 复制合约地址": "⧉ Copy contract address",
  "↗ 在 OKX 浏览器查看": "↗ View on OKX",
  "⇪ 分享": "⇪ Share",
- "● 1:1 锚定 LUSD": "● 1:1 pegged to LUSD",
+ "● 1:1 锚定 USD": "● 1:1 pegged to USD",
  "支付方式": "Payment method",
  "账": "A",
  "越南银行账号": "Vietnamese bank account",
@@ -1280,7 +1290,7 @@ const I18N = {
  "⧉ 复制合约地址": "⧉ Sao chép địa chỉ hợp đồng",
  "↗ 在 OKX 浏览器查看": "↗ Xem trên OKX",
  "⇪ 分享": "⇪ Chia sẻ",
- "● 1:1 锚定 LUSD": "● Neo 1:1 với LUSD",
+ "● 1:1 锚定 USD": "● Neo 1:1 với USD",
  "支付方式": "Phương thức thanh toán",
  "账": "TK",
  "越南银行账号": "Tài khoản ngân hàng Việt Nam",
