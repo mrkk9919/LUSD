@@ -282,10 +282,29 @@
   .toast.bad{border-color:rgba(255,45,120,.6)}
   .toast.top{bottom:auto;top:78px;transform:translateX(-50%) translateY(-12px)}
   .toast.top.show{transform:translateX(-50%) translateY(0)}
+
+  /* 顶部公告条 */
+  .ann{display:flex;align-items:center;gap:8px;padding:9px 12px;
+    background:linear-gradient(90deg,rgba(183,255,26,.14),rgba(183,255,26,.04));
+    border-bottom:1px solid rgba(183,255,26,.22)}
+  .ann .ad{width:6px;height:6px;border-radius:50%;background:var(--green);flex:none;
+    animation:adpulse 2.2s infinite}
+  @keyframes adpulse{0%{box-shadow:0 0 0 0 rgba(183,255,26,.5)}
+    70%{box-shadow:0 0 0 6px rgba(183,255,26,0)}100%{box-shadow:0 0 0 0 rgba(183,255,26,0)}}
+  .ann p{flex:1;min-width:0;font-size:11.5px;line-height:1.5;color:#a9b3a0}
+  .ann p b{color:var(--green);font-weight:600}
+  .ann .ax{background:none;border:0;color:#5c636b;font-size:16px;line-height:1;padding:0 2px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="phone">
+
+  <!-- 发行公告 -->
+  <div class="ann" id="ann">
+    <span class="ad"></span>
+    <p><b>新币发行中</b> · P2P 交易功能将在 14 小时后开放</p>
+    <button class="ax" onclick="this.parentNode.style.display='none'" aria-label="关闭">×</button>
+  </div>
 
   <!-- header -->
   <header class="hdr">

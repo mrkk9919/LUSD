@@ -277,10 +277,43 @@ details .a{padding:0 40px 20px 0;font-size:13.4px;line-height:1.75;color:var(--m
   h1{font-size:clamp(32px,9vw,44px)}
   .hero{padding-top:36px}
 }
+/* ---------- 顶部公告条 ---------- */
+.annbar{position:relative;z-index:61;
+  background:linear-gradient(90deg,rgba(233,185,73,.20),rgba(233,185,73,.05) 55%,rgba(233,185,73,.14));
+  border-bottom:1px solid rgba(233,185,73,.26)}
+.ann-in{display:flex;align-items:center;gap:10px;padding-top:11px;padding-bottom:11px}
+.ann-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;
+  animation:annpulse 2.2s infinite}
+@keyframes annpulse{
+  0%{box-shadow:0 0 0 0 rgba(233,185,73,.55)}
+  70%{box-shadow:0 0 0 7px rgba(233,185,73,0)}
+  100%{box-shadow:0 0 0 0 rgba(233,185,73,0)}
+}
+.ann-in p{flex:1;min-width:0;font-size:13px;line-height:1.55;color:#cdbb95}
+.ann-in p b{color:var(--gold2);font-weight:650;margin-right:8px}
+.ann-in p em{font-style:normal;color:#fff;font-weight:600}
+.ann-x{background:none;border:0;color:#8e9cb2;font-size:19px;line-height:1;cursor:pointer;
+  padding:2px 5px;flex-shrink:0;transition:color .16s}
+.ann-x:hover{color:#fff}
+@media (max-width:620px){
+  .ann-in{padding-top:9px;padding-bottom:9px;align-items:flex-start}
+  .ann-dot{margin-top:6px}
+  .ann-in p{font-size:12px}
+  .ann-in p b{display:block;margin-right:0;margin-bottom:1px}
+}
+
 </style>
 <noscript><style>.rv{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
+
+<div class="annbar" id="annbar">
+  <div class="wrap ann-in">
+    <span class="ann-dot"></span>
+    <p><b>新币发行公告</b>LUSD 已完成发行，<em>P2P 交易功能将在 14 小时后开放</em></p>
+    <button class="ann-x" onclick="closeAnn()" aria-label="关闭公告">×</button>
+  </div>
+</div>
 
 <header class="site-head">
   <div class="wrap head-in">
@@ -662,6 +695,24 @@ const spy = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '-45% 0px -50% 0px' });
 secs.forEach(s => spy.observe(s));
+
+/* 顶部公告条：关闭后 12 小时内不再显示 */
+const ANN_KEY = 'lusd_ann_hide';
+function closeAnn(){
+  const el = document.getElementById('annbar');
+  if (!el) return;
+  el.style.display = 'none';
+  try { localStorage.setItem(ANN_KEY, String(Date.now())); } catch(_){}
+}
+(function(){
+  try {
+    const t = Number(localStorage.getItem(ANN_KEY) || 0);
+    if (t && Date.now() - t < 12 * 3600 * 1000) {
+      const el = document.getElementById('annbar');
+      if (el) el.style.display = 'none';
+    }
+  } catch(_){}
+})();
 </script>
 </body>
 </html>
