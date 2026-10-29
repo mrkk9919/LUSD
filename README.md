@@ -28,9 +28,14 @@ index.html            项目介绍页（落地页，GitHub Pages 首页）
 whitepaper/
   index.html          技术白皮书（含目录、打印样式）
 assets/               落地页图标资源
-demo/
-  index.html          移动端代币详情页（界面演示，纯前端、无依赖）
+dapp/
+  index.html          DApp 主界面（单文件、纯前端、无外部依赖）
+  manifest.json       PWA 清单，可「添加到主屏幕」以独立窗口运行
+  icon-192.png        应用图标
+  icon-512.png        应用图标（同时声明 maskable）
   assets/             代币图标
+demo/
+  index.html          旧地址跳转页（自动前往 /dapp/）
 ```
 
 ## 快速开始
@@ -56,14 +61,17 @@ npx hardhat run scripts/deploy.js --network localhost
 | 路径 | 用途 |
 |---|---|
 | `/`（根目录 `index.html`） | 项目介绍落地页：概念、运作方式、用例、透明度、风险披露、FAQ |
-| `/demo/` | 移动端代币详情页：K 线、行情、持仓、风险扫描、钱包连接 |
+| `/dapp/` | **DApp 主界面**：K 线、行情、持仓、风险扫描、钱包连接、P2P、链上订单流 |
+| `/demo/` | 旧地址，自动跳转至 `/dapp/` |
 | `/whitepaper/` | 技术白皮书：双代币模型、储备机制、合约架构、权限矩阵、风险披露、已知限制 |
 
 在线地址：https://mrkk9919.github.io/LUSD/
 
-## 演示页面
+## DApp
 
-直接用浏览器打开 `demo/index.html` 即可（无需安装、无需联网、无外部依赖）。
+入口：https://mrkk9919.github.io/LUSD/dapp/ ，或从落地页的 **Launch DApp** 按钮进入。
+
+单文件、零依赖，直接双击 `dapp/index.html` 也能打开（`file://` 下 PWA 清单不生效，其余功能正常）。
 
 页面包含：K 线图（含 MA/成交量/多周期）、代币信息、持仓分布、风险扫描、动态流、P2P 买卖
 （50 家商家 + 越南银行收款账号绑定 + **链上订单流**），以及一个**支持任意 EIP-1193 钱包的连接器**
