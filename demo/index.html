@@ -767,7 +767,10 @@
       <span class="chipx" onclick="pickPay(this)">Alipay</span>
     </div>
 
-    <div class="h3">Verified merchants</div>
+    <div class="h3" style="display:flex;justify-content:space-between;align-items:baseline">
+      <span>Verified merchants</span>
+      <span id="p2pCount" style="font-size:10.5px;font-weight:500;color:var(--dim);letter-spacing:0">50 merchants · price sorted</span>
+    </div>
     <div class="card" style="padding:2px 14px" id="p2pList"></div>
 
     <div class="p2p-note">
@@ -1416,18 +1419,45 @@ function renderLiq(){
 }
 
 /* ============ P2P ============ */
-const P2P = {
-  buy:[
-    {n:'LUSD Market',  v:true, orders:1284, rate:'99.2%', price:1.0020, min:50,  max:2000, pay:'Bank transfer'},
-    {n:'Global Exchange', v:true, orders:862, rate:'98.7%', price:1.0035, min:100, max:5000, pay:'Wise'},
-    {n:'SunPay',       v:false,orders:214,  rate:'96.1%', price:1.0050, min:20,  max:800,  pay:'Alipay'}
-  ],
-  sell:[
-    {n:'BlueOcean',    v:true, orders:1043, rate:'99.5%', price:0.9980, min:50,  max:3000, pay:'Bank transfer'},
-    {n:'TradeHub',     v:true, orders:530,  rate:'97.8%', price:0.9970, min:100, max:4000, pay:'Wise'},
-    {n:'QuickSwap',    v:false,orders:88,   rate:'94.2%', price:0.9960, min:20,  max:500,  pay:'Alipay'}
-  ]
-};
+const P2P_PRE=['Aurora','Blue','Crypto','Delta','East','Falcon','Global','Hyper','Ion','Jade',
+               'King','Luna','Meta','Nova','Omega','Prime','Quantum','Royal','Star','Titan'];
+const P2P_SUF=['Exchange','Capital','Pay','Digital','Trade'];
+const P2P_PAY=['Bank transfer','Wise','Alipay'];
+const P2P_MIN=[20,50,100,200];
+const P2P_MAX=[500,1000,2000,5000,10000];
+
+/* 固定种子打散，保证每次打开顺序一致，且名字不扎堆 */
+const P2P_NAMES=(function(){
+  const all=[];
+  for(let a=0;a<P2P_PRE.length;a++) for(let b=0;b<P2P_SUF.length;b++) all.push(P2P_PRE[a]+' '+P2P_SUF[b]);
+  let seed=20261029;
+  const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+  for(let i=all.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=all[i]; all[i]=all[j]; all[j]=t; }
+  return all.slice(0,50);
+})();
+
+function buildOffers(side){
+  const out=[];
+  for(let i=0;i<50;i++){
+    const name = P2P_NAMES[i];
+    // 买入侧：卖家的要价，从低到高（越低越优先）
+    // 卖出侧：买家的出价，从高到低（越高越优先）
+    const price = side==='buy' ? 1.0005 + i*0.00011 : 0.9995 - i*0.00011;
+    out.push({
+      n: name,
+      v: i < 36,
+      orders: 2860 - i*53 + (i%7)*11,
+      rate: (99.9 - i*0.13).toFixed(1)+'%',
+      price: Number(price.toFixed(4)),
+      min: P2P_MIN[i%4],
+      max: P2P_MAX[i%5],
+      pay: P2P_PAY[i%3]
+    });
+  }
+  return out;
+}
+
+const P2P = { buy: buildOffers('buy'), sell: buildOffers('sell') };
 let p2pMode='buy';
 
 function setP2P(mode){
@@ -1445,6 +1475,8 @@ function setP2P(mode){
 function renderP2P(){
   const list=$('p2pList'); if(!list) return;
   const rows=P2P[p2pMode]||[];
+  const cnt=$('p2pCount');
+  if(cnt) cnt.textContent=rows.length+' merchants · price sorted';
   list.innerHTML=rows.map((o,i)=>
     '<div class="p2p-row">'
     +'<div class="p2p-av">'+o.n.charAt(0)+'</div>'
