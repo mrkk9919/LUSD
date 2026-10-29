@@ -10,11 +10,11 @@
     "deploy:local": "hardhat run scripts/deploy.js --network localhost"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^3.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "chai": "^4.3.10",
     "ethers": "^6.13.0",
-    "hardhat": "^2.22.0",
+    "hardhat": "^3.21.1",
     "mocha": "^10.4.0"
   },
   "dependencies": {
