@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUSD 技术白皮书 · Whitepaper</title>
+<meta name="description" content="LUSD 技术白皮书：全额储备的美元计价稳定币，双代币模型、合约架构、冻结机制与风险披露。">
+<link rel="icon" href="data:image/png;base64,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">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#050c18; --navy2:#08152a;
+  --gold:#e9b949; --gold2:#f7d98d; --goldink:#8a5f0a;
+  --paper:#f6f3ec; --card:#ffffff;
+  --ink:#12203a; --ink2:#3a4c68; --muted:#6d7e98;
+  --line:#e4ded2; --line2:#d2cabb;
+  --ok:#1f7a4d; --warn:#9a5b00; --bad:#a3302c;
+}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+    "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--paper); color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  line-height:1.75;
+}
+a{color:inherit;text-decoration:none}
+img{display:block}
+
+/* ---------- progress ---------- */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:90;transition:width .1s linear}
+
+/* ---------- topbar ---------- */
+.top{
+  position:sticky;top:0;z-index:60;
+  background:rgba(5,12,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.top-in{max-width:1120px;margin:0 auto;padding:0 26px;height:58px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;letter-spacing:.01em;flex-shrink:0}
+.brand img{width:28px;height:28px;border-radius:50%}
+.brand b{font-size:15px}
+.brand span{font-size:11px;font-weight:500;color:var(--gold2);border:1px solid rgba(233,185,73,.35);
+  border-radius:5px;padding:2px 7px;letter-spacing:.06em;text-transform:uppercase}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tlink{font-size:13px;color:#b9c8de;padding:7px 12px;border-radius:8px;transition:.16s;white-space:nowrap}
+.tlink:hover{color:#fff;background:rgba(255,255,255,.07)}
+#tocBtn{display:none;font-size:13px;color:#0b1729;background:var(--gold);border:0;border-radius:8px;
+  padding:7px 13px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(900px 420px at 78% -10%,rgba(233,185,73,.16),transparent 60%),
+    radial-gradient(700px 380px at 8% 110%,rgba(46,104,190,.20),transparent 60%),
+    linear-gradient(180deg,#050c18 0%,#08152a 62%,#0a1a33 100%);
+  color:#fff;padding:62px 0 54px;
+}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:58px 58px;
+  mask-image:radial-gradient(70% 70% at 50% 40%,#000,transparent);}
+.hero .wrap{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:0 26px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold2);border:1px solid rgba(233,185,73,.32);
+  border-radius:999px;padding:5px 13px;margin-bottom:20px}
+.kicker i{width:5px;height:5px;border-radius:50%;background:var(--gold);display:block}
+.hero h1{font-size:clamp(30px,4.4vw,46px);line-height:1.22;letter-spacing:-.02em;font-weight:750}
+.hero h1 em{font-style:normal;color:var(--gold);display:block;font-size:.52em;letter-spacing:.02em;margin-top:10px;font-weight:500;color:#9fb4d0}
+.lede{margin-top:18px;max-width:640px;font-size:15.5px;line-height:1.85;color:#b9c8de}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.meta span{font-size:12px;color:#c8d5e6;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);border-radius:7px;padding:5px 11px}
+.meta b{color:#fff;font-weight:600}
+
+/* ---------- banner ---------- */
+.banner{
+  margin-top:30px;display:flex;gap:12px;align-items:flex-start;
+  background:rgba(233,185,73,.09);border:1px solid rgba(233,185,73,.3);
+  border-left:3px solid var(--gold);border-radius:10px;padding:14px 16px;max-width:780px;
+}
+.banner svg{flex-shrink:0;width:18px;height:18px;margin-top:2px;stroke:var(--gold);fill:none;stroke-width:1.7}
+.banner p{font-size:13px;line-height:1.75;color:#e3d9c2}
+.banner b,.banner strong{color:#fff;font-weight:650}
+
+/* ---------- layout ---------- */
+.layout{max-width:1120px;margin:0 auto;padding:0 26px;display:grid;
+  grid-template-columns:228px minmax(0,1fr);gap:52px;align-items:start}
+.toc{position:sticky;top:82px;padding:38px 0 60px;max-height:calc(100vh - 100px);overflow:auto}
+.toc::-webkit-scrollbar{width:4px}
+.toc::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+.toc-t{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:14px;font-weight:700}
+.toc a{display:block;font-size:13px;color:var(--ink2);padding:6px 0 6px 12px;
+  border-left:2px solid transparent;line-height:1.45;transition:.15s}
+.toc a:hover{color:var(--ink)}
+.toc a.on{color:var(--goldink);border-left-color:var(--gold);font-weight:600;background:rgba(233,185,73,.09)}
+.toc a i{font-style:normal;color:var(--muted);font-size:11px;margin-right:6px;font-variant-numeric:tabular-nums}
+.toc a.on i{color:var(--goldink)}
+
+.paper{min-width:0;padding:38px 0 90px}
+.sec{padding:34px 0;border-bottom:1px solid var(--line)}
+.sec:last-of-type{border-bottom:0}
+h2{font-size:25px;line-height:1.35;letter-spacing:-.015em;font-weight:750;margin-bottom:4px;
+  display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+h2 em{font-style:normal;font-size:13px;font-weight:700;color:var(--goldink);
+  font-variant-numeric:tabular-nums;letter-spacing:.06em}
+h2 span{display:block;width:100%;font-size:14px;font-weight:500;color:var(--muted);letter-spacing:0}
+.sec>p{margin-top:16px;font-size:15px;line-height:1.92;color:var(--ink2)}
+.sec>p+p{margin-top:12px}
+h3{font-size:15.5px;font-weight:700;margin:28px 0 10px;padding-left:11px;
+  border-left:3px solid var(--gold);line-height:1.5}
+h4{font-size:13.5px;font-weight:700;margin:20px 0 8px;color:var(--ink)}
+strong{font-weight:650;color:var(--ink)}
+.hl{background:linear-gradient(180deg,transparent 62%,rgba(233,185,73,.32) 62%);font-weight:600}
+ul,ol{margin:12px 0 0 0;padding-left:20px}
+li{font-size:14.5px;line-height:1.9;color:var(--ink2);margin-bottom:5px}
+li::marker{color:var(--goldink)}
+
+/* ---------- cards ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px}
+.card h5{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--ink);display:flex;align-items:center;gap:7px}
+.card p{font-size:13px;line-height:1.75;color:var(--muted)}
+.card .n{width:22px;height:22px;border-radius:6px;background:rgba(233,185,73,.16);color:var(--goldink);
+  font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ---------- table ---------- */
+.tw{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+th{text-align:left;padding:11px 14px;background:#efe9dc;color:#5b4a26;font-weight:700;
+  font-size:12px;letter-spacing:.03em;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid #f0ebe1;color:var(--ink2);line-height:1.65;vertical-align:top}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink);font-weight:650}
+td code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
+  background:#f2ede2;padding:1px 5px;border-radius:4px;color:#4a3a18}
+
+/* ---------- note / warn ---------- */
+.note,.warn{border-radius:10px;padding:14px 16px;margin-top:18px;font-size:13.5px;line-height:1.8}
+.note{background:#fdf8ea;border:1px solid #ecdcb4;border-left:3px solid var(--gold);color:#5a4620}
+.warn{background:#fdf1f0;border:1px solid #eccbc8;border-left:3px solid #c0574f;color:#7a2f2a}
+.note b,.warn b{color:#2a1c00}
+.warn b{color:#5c1f1b}
+
+/* ---------- code ---------- */
+pre{margin-top:16px;background:#0a1526;border:1px solid #16263f;border-radius:11px;
+  padding:16px 18px;overflow-x:auto;font-size:12.5px;line-height:1.75;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c7d6ea}
+pre::-webkit-scrollbar{height:6px}
+pre::-webkit-scrollbar-thumb{background:#26374f;border-radius:3px}
+.kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}.cm{color:#5b7291}.num{color:#f78c6c}
+
+/* ---------- flow ---------- */
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.fcol{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.fcol .ft{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--goldink);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.fcol .ft i{width:6px;height:6px;border-radius:50%;background:var(--gold);display:block}
+.step{display:flex;gap:10px;margin-bottom:12px}
+.step:last-child{margin-bottom:0}
+.step .sn{width:19px;height:19px;border-radius:50%;border:1px solid var(--line2);color:var(--muted);
+  font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step p{font-size:12.5px;line-height:1.7;color:var(--ink2)}
+.step p b{display:block;color:var(--ink);font-size:12.5px}
+
+/* ---------- chips ---------- */
+.sev{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.sev.h{background:#fbe6e4;color:#a3302c}
+.sev.m{background:#fdf0d8;color:#8a5f0a}
+.sev.l{background:#e5f2ea;color:#1f7a4d}
+
+/* ---------- roadmap ---------- */
+.road{margin-top:20px;display:grid;gap:10px}
+.ph{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:start;
+  background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+.ph .p1{font-size:11.5px;font-weight:700;color:var(--goldink);letter-spacing:.04em;padding-top:2px}
+.ph .p2 b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.ph .p2 span{font-size:12.5px;color:var(--muted);line-height:1.65}
+.ph .p3{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap;
+  background:#f0ebe0;color:#6d5a2e;height:fit-content}
+.ph .p3.done{background:#e5f2ea;color:#1f7a4d}
+.ph .p3.now{background:#fdf0d8;color:#8a5f0a}
+
+/* ---------- footer ---------- */
+.pfoot{border-top:1px solid var(--line);margin-top:20px;padding-top:26px}
+.pfoot p{font-size:12px;line-height:1.85;color:var(--muted)}
+.pfoot .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.act{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+  padding:9px 15px;border-radius:9px;border:1px solid var(--line2);color:var(--ink);background:var(--card);transition:.16s}
+.act:hover{border-color:var(--gold);color:var(--goldink)}
+.act.pri{background:#0a1526;color:#fff;border-color:#0a1526}
+.act.pri:hover{background:#12233d;color:#fff}
+#toTop{position:fixed;right:22px;bottom:22px;width:40px;height:40px;border-radius:50%;
+  background:#0a1526;color:#fff;border:0;cursor:pointer;display:none;place-items:center;z-index:50;
+  box-shadow:0 8px 22px rgba(10,21,38,.28)}
+#toTop.show{display:grid}
+#toTop svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ---------- drawer ---------- */
+#mask{position:fixed;inset:0;background:rgba(5,12,24,.5);z-index:70;opacity:0;pointer-events:none;transition:.2s}
+#mask.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;background:#0a1526;z-index:80;
+  transform:translateX(-100%);transition:transform .26s ease;padding:22px 18px;overflow:auto}
+.drawer.on{transform:none}
+.drawer .dt{color:#fff;font-size:13px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.drawer .dt button{background:none;border:0;color:#9db0cb;font-size:22px;cursor:pointer;line-height:1}
+.drawer a{display:block;color:#b9c8de;font-size:13.5px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.drawer a i{font-style:normal;color:#5b7291;font-size:11px;margin-right:8px}
+
+/* ---------- responsive ---------- */
+@media (max-width:960px){
+  .layout{grid-template-columns:1fr;gap:0}
+  .toc{display:none}
+  #tocBtn{display:block}
+  .tlink.hide{display:none}
+  .grid2,.grid3,.flow{grid-template-columns:1fr}
+  .hero{padding:44px 0 40px}
+  .paper{padding:18px 0 70px}
+  .sec{padding:26px 0}
+  h2{font-size:21px}
+  .ph{grid-template-columns:64px 1fr;gap:10px}
+  .ph .p3{grid-column:2;justify-self:start}
+}
+@media (max-width:620px){
+  /* 小屏：表格改为自动换行铺满，避免右侧列被裁掉 */
+  table{min-width:0;font-size:12.5px}
+  th{padding:9px 10px;font-size:11px;white-space:normal}
+  td{padding:9px 10px;word-break:break-word}
+  td code,.mono{font-size:11.5px;padding:0 4px}
+  pre{font-size:11.5px;padding:13px 14px}
+  .tw{border-radius:10px}
+  /* 风险表：等级列压到最窄，把宽度让给说明 */
+  .risktbl th:nth-child(2),.risktbl td:nth-child(2){width:1%;white-space:nowrap;padding-left:6px;padding-right:6px}
+  .risktbl th:first-child,.risktbl td:first-child{width:21%}
+  .risktbl th:nth-child(4),.risktbl td:nth-child(4){width:24%}
+}
+@media print{
+  .top,#prog,.toc,.drawer,#mask,#toTop,.pfoot .acts{display:none!important}
+  body{background:#fff}
+  .hero{background:#fff;color:#000;padding:0 0 24px}
+  .hero h1,.lede,.meta span,.kicker,.banner p{color:#000!important}
+  .banner{background:#f7f7f7;border-color:#ccc}
+  .layout{grid-template-columns:1fr;padding:0}
+  .sec{break-inside:avoid;page-break-inside:avoid}
+  pre{background:#f5f5f5;color:#222;border-color:#ddd}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="../">
+      <img src="data:image/png;base64,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" alt="LUSD">
+      <b>LUSD</b><span>Whitepaper</span>
+    </a>
+    <div class="top-r">
+      <a class="tlink hide" href="../">介绍页</a>
+      <a class="tlink hide" href="../demo/">代币页</a>
+      <a class="tlink hide" href="https://github.com/mrkk9919/LUSD" target="_blank" rel="noopener">源码</a>
+      <button id="tocBtn">目录</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker"><i></i>Technical Whitepaper · Draft v0.1</div>
+    <h1>LUSD 技术白皮书<em>全额储备、恒定锚定、折扣与本金分离的美元计价结算工具</em></h1>
+    <p class="lede">
+      本文说明 LUSD 为什么这样设计、合约如何实现、以及在什么条件下它会失效。
+      我们不主张 LUSD 是一种投资品，也不承诺任何收益。
+    </p>
+    <div class="meta">
+      <span>版本 <b>v0.1 草案</b></span>
+      <span>日期 <b>2026 年 10 月</b></span>
+      <span>合约 <b>Solidity 0.8.24</b></span>
+      <span>目标网络 <b>Base</b></span>
+      <span>状态 <b>未主网发行</b></span>
+    </div>
+    <div class="banner">
+      <svg viewBox="0 0 24 24"><path d="M12 3.2l8.6 15.2H3.4L12 3.2z" stroke-linejoin="round"/><path d="M12 9.6v3.6M12 16.2v.5" stroke-linecap="round"/></svg>
+      <p><b>阅读前请注意：</b>本文档描述的是<strong>设计目标</strong>与已完成的<strong>合约原型</strong>。LUSD 尚未在主网发行，文中所有比例、参数、路线图均为设计值，不构成既成事实、要约或任何形式的承诺。</p>
+    </div>
+  </div>
+</section>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-t">Contents</div>
+    <nav id="tocNav">
+      <a href="#abstract"><i>00</i>摘要</a>
+      <a href="#background"><i>01</i>背景</a>
+      <a href="#principles"><i>02</i>设计原则</a>
+      <a href="#model"><i>03</i>双代币模型</a>
+      <a href="#reserve"><i>04</i>储备与铸造赎回</a>
+      <a href="#contracts"><i>05</i>合约架构</a>
+      <a href="#risk"><i>06</i>风控与冻结</a>
+      <a href="#governance"><i>07</i>治理与权限</a>
+      <a href="#compliance"><i>08</i>合规</a>
+      <a href="#disclosure"><i>09</i>风险披露</a>
+      <a href="#limits"><i>10</i>已知限制</a>
+      <a href="#roadmap"><i>11</i>路线图</a>
+      <a href="#glossary"><i>12</i>术语表</a>
+      <a href="#disclaimer"><i>13</i>免责声明</a>
+    </nav>
+  </aside>
+
+  <main class="paper">
+
+    <!-- 00 -->
+    <section class="sec" id="abstract">
+      <h2><em>00</em>Abstract<span>摘要</span></h2>
+      <p>LUSD 是面向跨境彩票业务的<strong>美元计价稳定币</strong>。它不做算法调节、不做部分准备金、不承诺任何收益，唯一的价值来源是 <span class="hl">1:1 的 USDC 储备</span>。</p>
+      <p>与常见的"平台积分"不同，LUSD 的定位是<strong>钱</strong>：可自由转账、可在支持的交易所流通、可随时按 1:1 赎回。平台提供的购彩折扣不以压低 LUSD 价格的方式发放，而是通过一个独立的、<strong>不可转让的赠券</strong>（LVCH）实现。</p>
+      <p>这个拆分是本文的核心：<strong>把"支付"与"优惠"从同一个资产里拆开</strong>，从而在合约层消除"折价买入、平价赎回"的套利路径。</p>
+    </section>
+
+    <!-- 01 -->
+    <section class="sec" id="background">
+      <h2><em>01</em>Background<span>背景：为什么需要另一种稳定币</span></h2>
+      <p>跨境彩票业务里有三个反复出现的问题：</p>
+      <ul>
+        <li><strong>客户不愿持有波动资产。</strong>用 BTC、ETH 计价，客户今天充的钱明天可能少两成，投诉和纠纷几乎无法处理。</li>
+        <li><strong>跨境结算慢且贵。</strong>银行电汇跨时区、跨假期，到账以"天"计，手续费与汇损叠加。</li>
+        <li><strong>平台需要内部计价单位。</strong>票价、奖金、返水都需要一个稳定单位，不能随行情跳动。</li>
+      </ul>
+
+      <h3>为什么不能直接发一枚"打折的稳定币"</h3>
+      <p>最直觉的方案是：LUSD 按 0.98 美元卖给平台客户，赎回时按 1.00 美元兑付，折扣自动落地。这个方案有一个致命问题：</p>
+      <div class="warn">
+        <b>套利是数学问题，不是风控问题。</b>只要"买入价 &lt; 赎回价"且两者都能自由进行，任何人都可以循环操作：0.98 买入 → 1.00 赎回 → 再买入。这个循环不需要买一张彩票，几小时内就能把储备抽干。任何手续费、限频、人工审核都只是减缓速度，不改变结论。
+      </div>
+      <p>所以折扣必须存在于一个<strong>无法被兑换成钱</strong>的载体里。这是第 03 节的全部动机。</p>
+
+      <h3>三种方案对比</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>方案</th><th>折扣能否落地</th><th>能否出平台流通</th><th>套利风险</th></tr></thead>
+          <tbody>
+            <tr><td>平台积分 / 游戏币</td><td>能</td><td><b>不能</b>，只能内部消费</td><td>无</td></tr>
+            <tr><td>打折稳定币（0.98 买 / 1.00 赎）</td><td>能</td><td>能</td><td><span class="sev h">致命</span></td></tr>
+            <tr><td><b>双代币（本文）</b></td><td>能</td><td>能（仅 LUSD）</td><td><span class="sev l">无</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="sec" id="principles">
+      <h2><em>02</em>Design Principles<span>设计原则</span></h2>
+      <p>以下六条是硬约束。任何与它们冲突的功能需求，都应当被拒绝，而不是通过"临时开关"绕过。</p>
+      <div class="grid2">
+        <div class="card"><h5><span class="n">01</span>全额储备</h5><p>每一枚流通中的 LUSD，背后有且仅有一枚 USDC。不做部分准备金，不做"未来收益"抵押。</p></div>
+        <div class="card"><h5><span class="n">02</span>不做算法稳定币</h5><p>不依靠算法调节供给、不依靠姊妹代币吸收波动。历史上所有纯算法稳定币最终都归零。</p></div>
+        <div class="card"><h5><span class="n">03</span>不承诺收益</h5><p>不支付利息、不做质押生息、不宣传升值。这既是合规要求，也是产品定位。</p></div>
+        <div class="card"><h5><span class="n">04</span>折扣与本金物理隔离</h5><p>优惠只存在于不可转让的赠券中。LUSD 本身永远 1:1，不存在任何折价获取路径。</p></div>
+        <div class="card"><h5><span class="n">05</span>角色分离与最小权限</h5><p>铸造、冻结、暂停由不同角色持有。任何单一角色都无法同时完成"增发 + 转移"。</p></div>
+        <div class="card"><h5><span class="n">06</span>冻结有程序</h5><p>冻结必须可追溯、可申诉、有期限。冻结不是没收，也不阻断收款。</p></div>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="sec" id="model">
+      <h2><em>03</em>Dual-Token Model<span>双代币模型</span></h2>
+      <p>系统由两个资产构成，职责严格分离：<strong>LUSD 是钱，LVCH 是券</strong>。</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>维度</th><th>LUSD（稳定币）</th><th>LVCH（赠券）</th></tr></thead>
+          <tbody>
+            <tr><td>定位</td><td>支付与结算工具</td><td>消费折扣凭证</td></tr>
+            <tr><td>获取方式</td><td>1 USDC 铸造 1 LUSD</td><td>购彩时按比例赠送</td></tr>
+            <tr><td>赎回</td><td><b>1:1 赎回 USDC</b></td><td><b>不可赎回</b></td></tr>
+            <tr><td>转让</td><td>自由转账、可上交易所</td><td><b>不可转让</b>（合约层强制）</td></tr>
+            <tr><td>用途</td><td>任何场景</td><td>仅抵扣平台消费</td></tr>
+            <tr><td>价格</td><td>恒定 $1.00</td><td>无市场价格</td></tr>
+            <tr><td>总量</td><td>等于储备量，无上限</td><td>按消费行为增发，用完即销毁</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>为什么赠券必须不可转让</h3>
+      <p>如果赠券可以转账，客户就能在二级市场以 9 折把它卖给别人——这等于把"2% 折扣"重新变成了"可流通的折价资产"，套利路径又回来了，只是绕了一层。所以不可转让不是产品限制，而是<strong>安全边界</strong>。</p>
+      <p>实现方式是在 ERC-20 的 <code>_update</code> 钩子里做拦截：只允许铸造（<code>from == 0</code>）与销毁（<code>to == 0</code>），任何地址之间的转移直接 revert。</p>
+      <pre><span class="cm">// VoucherToken.sol</span>
+<span class="kw">function</span> <span class="fn">_update</span>(<span class="kw">address</span> from, <span class="kw">address</span> to, <span class="kw">uint256</span> value) <span class="kw">internal override</span> {
+    <span class="fn">require</span>(from == <span class="kw">address</span>(<span class="num">0</span>) || to == <span class="kw">address</span>(<span class="num">0</span>), <span class="str">"voucher non-transferable"</span>);
+    <span class="kw">super</span>.<span class="fn">_update</span>(from, to, value);
+}</pre>
+      <div class="note">
+        <b>这条限制由合约保证，不依赖前端。</b>即便有人直接调用合约、绕过网页，转账同样会失败。前端只是把这件事说清楚，不是它的执行者。
+      </div>
+
+      <h3>购彩时的扣款顺序</h3>
+      <p>买票时<strong>先扣赠券、再用 LUSD 补足</strong>。赠券被销毁（不是转到平台地址），因此不存在"平台囤积赠券再倒卖"的可能。</p>
+      <div class="flow">
+        <div class="fcol">
+          <div class="ft"><i></i>赠券充足</div>
+          <div class="step"><div class="sn">1</div><p><b>计算票价</b>票价 × 张数 = 应付总额</p></div>
+          <div class="step"><div class="sn">2</div><p><b>销毁赠券</b>从客户余额中 burn 应付金额</p></div>
+          <div class="step"><div class="sn">3</div><p><b>不动 LUSD</b>客户的法币价值完整保留</p></div>
+        </div>
+        <div class="fcol">
+          <div class="ft"><i></i>赠券不足</div>
+          <div class="step"><div class="sn">1</div><p><b>先用完赠券</b>余额全部 burn</p></div>
+          <div class="step"><div class="sn">2</div><p><b>差额扣 LUSD</b>transferFrom 剩余金额</p></div>
+          <div class="step"><div class="sn">3</div><p><b>记账开票</b>累加客户持票数并发出事件</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="sec" id="reserve">
+      <h2><em>04</em>Reserve &amp; Issuance<span>储备与铸造赎回</span></h2>
+      <p>LUSD 的价格不是"维持"出来的，是<strong>兑换关系定义</strong>出来的：合约永远接受 1 USDC 换 1 LUSD，也永远接受 1 LUSD 换 1 USDC。只要这个双向承诺成立，价格就没有偏离的空间。</p>
+
+      <div class="flow">
+        <div class="fcol">
+          <div class="ft"><i></i>Mint · 铸造</div>
+          <div class="step"><div class="sn">1</div><p><b>授权</b>用户对合约 approve USDC 额度</p></div>
+          <div class="step"><div class="sn">2</div><p><b>调用 deposit</b>合约 transferFrom 收取 USDC</p></div>
+          <div class="step"><div class="sn">3</div><p><b>等额铸造</b>按相同数量 mint LUSD（同为 6 位小数）</p></div>
+        </div>
+        <div class="fcol">
+          <div class="ft"><i></i>Redeem · 赎回</div>
+          <div class="step"><div class="sn">1</div><p><b>调用 redeem</b>指定要赎回的 LUSD 数量</p></div>
+          <div class="step"><div class="sn">2</div><p><b>先销毁</b>burn 掉用户持有的 LUSD</p></div>
+          <div class="step"><div class="sn">3</div><p><b>再付款</b>transfer 等额 USDC 给用户</p></div>
+        </div>
+      </div>
+
+      <h3>关键参数</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>项目</th><th>设计值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>铸造比例</td><td><b>1 USDC : 1 LUSD</b></td><td>无滑点、无手续费</td></tr>
+            <tr><td>赎回比例</td><td><b>1 LUSD : 1 USDC</b></td><td>与铸造完全对称</td></tr>
+            <tr><td>代币精度</td><td><code>6</code> 位小数</td><td>与 USDC 对齐，避免换算误差</td></tr>
+            <tr><td>储备率下限</td><td><b>100%</b></td><td>低于此值必须停止铸造</td></tr>
+            <tr><td>储备资产</td><td>USDC 为主</td><td>短期国债为待评估选项，需法律意见</td></tr>
+            <tr><td>储备证明</td><td>每日快照 + 链上地址公开</td><td>审计报告于主网上线前公布</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>储备不足时怎么办</h3>
+      <p>这是一个必须提前写清楚的场景。原则只有一条：</p>
+      <div class="note">
+        <b>宁可停止铸造，不可停止赎回。</b>铸造暂停只影响新资金进入，赎回暂停等于宣告违约。前者是风控动作，后者是信用破产。储备跌破 100% 时，正确顺序是：暂停铸造 → 公布缺口 → 启动补充 → 全程保持赎回开放。
+      </div>
+      <p>当前原型合约的 <code>pause()</code> 会同时冻结铸造与赎回，这与上述原则不一致，已在第 10 节列为待修复项。</p>
+    </section>
+
+    <!-- 05 -->
+    <section class="sec" id="contracts">
+      <h2><em>05</em>Contract Architecture<span>合约架构</span></h2>
+      <p>原型由四个合约组成，职责单一、互不越权：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>合约</th><th>职责</th><th>关键接口</th></tr></thead>
+          <tbody>
+            <tr><td><b>StableToken</b><br><span class="mono">LUSD</span></td><td>储备托管、铸造、赎回、冻结</td><td><code>deposit</code> <code>redeem</code> <code>freeze</code> <code>pause</code></td></tr>
+            <tr><td><b>VoucherToken</b><br><span class="mono">LVCH</span></td><td>赠券发行与销毁，禁止转让</td><td><code>mint</code> <code>burnFrom</code></td></tr>
+            <tr><td><b>SimpleLottery</b></td><td>售票，先扣券再扣币</td><td><code>buyTicket</code> <code>setTicketPrice</code></td></tr>
+            <tr><td><b>MockUSDC</b></td><td>仅测试网使用的 USDC 替身</td><td><code>mint</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>权限矩阵</h3>
+      <p>每一行是一个角色，每一列是一个它能做的动作。<strong>没有任何一个角色能同时完成"凭空增发"与"转走储备"</strong>。</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>角色</th><th>铸造 LUSD</th><th>冻结地址</th><th>暂停合约</th><th>发赠券</th><th>动储备</th></tr></thead>
+          <tbody>
+            <tr><td><b>DEFAULT_ADMIN</b></td><td>—</td><td>—</td><td>—</td><td>—</td><td>仅授予角色</td></tr>
+            <tr><td><b>MINTER</b></td><td>仅通过存入 USDC</td><td>—</td><td>—</td><td>—</td><td>否</td></tr>
+            <tr><td><b>BLACKLISTER</b></td><td>—</td><td>✔</td><td>—</td><td>—</td><td>否</td></tr>
+            <tr><td><b>PAUSER</b></td><td>—</td><td>—</td><td>✔</td><td>—</td><td>否</td></tr>
+            <tr><td><b>Lottery</b></td><td>—</td><td>—</td><td>—</td><td>销毁赠券</td><td>否</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <b>注意"动储备"整列为空。</b>合约里不存在任何让管理员提取 USDC 的函数——储备只能通过 <code>redeem</code> 按 1:1 支付给持有者。这是设计上最重要的一条：<strong>即使私钥泄露，攻击者也拿不走储备</strong>，最多能增发并砸盘。
+      </div>
+
+      <h3>冻结的实现位置</h3>
+      <p>冻结不是靠前端拦截，而是写进 ERC-20 的转账钩子，所有转账路径（含 <code>transferFrom</code>）都会经过它：</p>
+      <pre><span class="cm">// StableToken.sol —— 只拦"转出"，不拦"转入"</span>
+<span class="kw">function</span> <span class="fn">_update</span>(<span class="kw">address</span> from, <span class="kw">address</span> to, <span class="kw">uint256</span> value) <span class="kw">internal override</span> {
+    <span class="kw">if</span> (from != <span class="kw">address</span>(<span class="num">0</span>)) {
+        <span class="fn">require</span>(!frozen[from], <span class="str">"from frozen"</span>);
+    }
+    <span class="kw">super</span>.<span class="fn">_update</span>(from, to, value);
+}</pre>
+      <p>这个写法有一个刻意的取舍：<strong>被冻结的地址仍然可以收款</strong>。原因很实际——退款、派奖、司法划扣都需要能打进去；如果连转入都拦，平台自己也没法处理。</p>
+
+      <h3>技术栈</h3>
+      <div class="grid3">
+        <div class="card"><h5>语言</h5><p>Solidity 0.8.24，开启 optimizer（runs 200）</p></div>
+        <div class="card"><h5>依赖</h5><p>OpenZeppelin Contracts 5.x：ERC20、AccessControl、Pausable</p></div>
+        <div class="card"><h5>测试</h5><p>Hardhat + ethers v6，7 项用例覆盖铸造、赎回、转让拦截、冻结、权限</p></div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="sec" id="risk">
+      <h2><em>06</em>Risk Control &amp; Freezing<span>风控与冻结机制</span></h2>
+      <p>冻结是稳定币绕不开的功能，也是最容易被滥用的功能。我们的处理办法是把冻结拆成<strong>两条完全不同的轨道</strong>，适用不同程序、不同告知义务。</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>维度</th><th>平台风控冻结</th><th>司法冻结</th></tr></thead>
+          <tbody>
+            <tr><td>触发原因</td><td>异常交易、疑似洗钱、账户被盗、违反平台规则</td><td>公安、监管、法院的正式文书</td></tr>
+            <tr><td>谁批准</td><td>风控负责人 + 合规复核（双人）</td><td>法务核验文书真实性后执行</td></tr>
+            <tr><td>是否通知客户</td><td><b>立即通知</b>，说明原因类别</td><td>视文书要求，可能<b>不得告知</b></td></tr>
+            <tr><td>客户能否申诉</td><td>能，7 个工作日内答复</td><td>向作出决定的机关申诉</td></tr>
+            <tr><td>期限</td><td>默认 30 天，续期需重新审批</td><td>依文书载明期限</td></tr>
+            <tr><td>是否影响收款</td><td>不影响</td><td>不影响</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>平台风控冻结的流程</h3>
+      <ul>
+        <li><strong>触发</strong> — 系统规则命中或人工上报，生成工单编号</li>
+        <li><strong>复核</strong> — 第二人独立确认，避免单人误操作</li>
+        <li><strong>执行</strong> — 链上 <code>freeze</code>，同时站内信 + 邮件告知</li>
+        <li><strong>申诉</strong> — 客户提交材料，7 个工作日内给出结论</li>
+        <li><strong>解除</strong> — <code>unfreeze</code>，记录操作人与时间</li>
+      </ul>
+
+      <h3>司法冻结的边界</h3>
+      <div class="warn">
+        <b>只认正式文书，不认电话与聊天。</b>冒充公检法是高发诈骗手法：对方会要求"配合调查、立即冻结某地址"。正确做法是挂断，通过官方渠道回拨核验，并要求书面文书。<strong>任何通过社交软件发来的"冻结指令"一律不执行。</strong>
+      </div>
+      <p>跨境场景还有一个额外约束：不同司法辖区的冻结令效力范围不同，平台应在收到文书后由当地律师判断是否具有执行力，而不是"谁来要都配合"。</p>
+      <div class="note">
+        <b>冻结不等于没收。</b>被冻结地址的余额依然属于客户，只是暂时不能转出。平台无权划走、无权挪用、无权"充公"。
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section class="sec" id="governance">
+      <h2><em>07</em>Governance<span>治理与权限管理</span></h2>
+      <p>权限设计的核心问题不是"谁能做什么"，而是"<strong>单一主体失控时会发生什么</strong>"。目标状态与当前原型差距如下：</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>项目</th><th>当前原型</th><th>主网目标</th></tr></thead>
+          <tbody>
+            <tr><td>管理员</td><td>单一 EOA 地址</td><td><b>3/5 多签</b>，成员分属不同法人主体</td></tr>
+            <tr><td>关键操作延迟</td><td>无</td><td><b>48 小时时间锁</b>，可被观察与拦截</td></tr>
+            <tr><td>角色分配</td><td>全部授予部署者</td><td>铸造 / 冻结 / 暂停三权分属不同多签</td></tr>
+            <tr><td>合约升级</td><td>不可升级</td><td>保持不可升级（见下）</td></tr>
+            <tr><td>紧急暂停</td><td>PAUSER 单签即可</td><td>单签可暂停，但恢复需多签</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <b>为什么坚持不可升级。</b>可升级合约意味着管理员可以在某天把"1:1 赎回"改成"0.5:1"，而持币者无法提前阻止。对稳定币而言，<strong>不可篡改本身就是信用的一部分</strong>。代价是 bug 无法热修——所以主网上线前的审计不能省。
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section class="sec" id="compliance">
+      <h2><em>08</em>Compliance<span>合规框架</span></h2>
+      <p>LUSD 同时落在三个监管框架的交集里，缺一不可：</p>
+      <div class="grid3">
+        <div class="card"><h5><span class="n">A</span>博彩牌照</h5><p>按运营主体所在辖区及客户所在辖区分别申请，跨境投注通常需要双边许可。</p></div>
+        <div class="card"><h5><span class="n">B</span>支付 / 汇兑</h5><p>发行与赎回稳定币可能构成货币传输、电子货币发行或虚拟资产服务，需对应牌照（MSB / EMI / VASP）。</p></div>
+        <div class="card"><h5><span class="n">C</span>证券法</h5><p>不承诺收益、不做分红、不宣传升值，避免被认定为投资合约。这是产品文案的红线。</p></div>
+      </div>
+
+      <h3>KYC / AML</h3>
+      <ul>
+        <li>铸造与赎回<strong>必须</strong>经过实名认证，链上转账不强制——这是"入口严、流转宽"的常规做法</li>
+        <li>大额与异常交易触发来源审查，记录保存不少于当地法定期限</li>
+        <li>制裁名单与政治公众人物（PEP）筛查，命中即拒绝服务并上报</li>
+        <li>可疑交易报告（STR）流程与监管报送渠道须提前建立，不能等出事再补</li>
+      </ul>
+
+      <h3>宣传红线</h3>
+      <div class="warn">
+        <b>不得出现以下表述：</b>"持有即增值"、"年化收益"、"稳赚"、"早买早赚"、"限量发行所以会涨"。<br>
+        稳定币的价值来自<strong>可兑付</strong>，不来自稀缺性。任何暗示升值的文案，都会同时招来监管和投诉。
+      </div>
+      <p>本文档不构成法律意见。具体辖区的牌照要求、储备资产的可持有形式、以及跨境执法协助的程序，均须由当地执业律师出具意见后确定。</p>
+    </section>
+
+    <!-- 09 -->
+    <section class="sec" id="disclosure">
+      <h2><em>09</em>Risk Disclosure<span>风险披露</span></h2>
+      <p>以下风险无法通过设计消除，只能被识别、计量与披露。按严重程度排序：</p>
+      <div class="tw">
+        <table class="risktbl">
+          <thead><tr><th>风险</th><th>等级</th><th>说明</th><th>缓释措施</th></tr></thead>
+          <tbody>
+            <tr><td><b>储备托管风险</b></td><td><span class="sev h">高</span></td><td>USDC 存放于合约或托管方，托管方破产、被冻结、被制裁都会导致储备不可用</td><td>多托管方分散、定期 PoR、法律隔离账户</td></tr>
+            <tr><td><b>脱锚风险</b></td><td><span class="sev h">高</span></td><td>若市场对兑付能力失去信心，二级市场价格可能低于 $1，赎回挤兑会加速这一过程</td><td>储备透明、赎回不设闸、流动性缓冲</td></tr>
+            <tr><td><b>监管风险</b></td><td><span class="sev h">高</span></td><td>主要辖区改变对稳定币的定性，可能要求持牌、限制发行或强制清退</td><td>多辖区布局、法律意见前置、可有序退出</td></tr>
+            <tr><td><b>合约风险</b></td><td><span class="sev m">中</span></td><td>代码缺陷可能导致资金锁死或被攻击。原型尚未审计</td><td>审计、形式化验证关键路径、漏洞赏金</td></tr>
+            <tr><td><b>对手方风险</b></td><td><span class="sev m">中</span></td><td>USDC 本身依赖发行方的储备与合规状态，LUSD 继承了这一层风险</td><td>储备构成披露、发行方分散化</td></tr>
+            <tr><td><b>流动性风险</b></td><td><span class="sev m">中</span></td><td>二级市场深度不足时，大额兑换会产生滑点；赎回通道正常时不构成兑付风险</td><td>做市激励、赎回通道优先级高于交易</td></tr>
+            <tr><td><b>冻结误伤</b></td><td><span class="sev l">低</span></td><td>风控规则误判导致正常客户被冻结</td><td>双人复核、7 日申诉、默认 30 天到期</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn">
+        <b>请特别注意：</b>LUSD 不承诺保本之外的任何回报。持有 LUSD 不会产生利息，也不会因平台业务增长而升值。若你的目的是投资获利，LUSD 不是合适的选择。
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="sec" id="limits">
+      <h2><em>10</em>Known Limitations<span>已知限制</span></h2>
+      <p>原型代码里目前存在以下问题。把它们写进白皮书而不是藏起来，是因为<strong>审计方和合作方一定会发现</strong>，主动披露比被指出更可信。</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>问题</th><th>影响</th><th>修复方向</th></tr></thead>
+          <tbody>
+            <tr><td><b>暂停同时停掉赎回</b><br><code>redeem</code> 带 <code>whenNotPaused</code></td><td>暂停期间客户无法退出，与"赎回永不关闭"原则冲突</td><td>移除 <code>redeem</code> 的暂停修饰符，仅保留铸造暂停</td></tr>
+            <tr><td><b>彩票合约持有 MINTER 权限</b></td><td>售票合约理论上可无限增发赠券</td><td>拆分 <code>MINTER_ROLE</code> 与 <code>BURNER_ROLE</code>，彩票合约只给后者</td></tr>
+            <tr><td><b>单一管理员 EOA</b></td><td>私钥泄露即可增发、冻结、暂停</td><td>迁移至 3/5 多签 + 48h 时间锁</td></tr>
+            <tr><td><b>未审计</b></td><td>无法排除未知缺陷</td><td>主网上线前完成第三方审计并公开报告</td></tr>
+            <tr><td><b>无储备证明合约</b></td><td>储备率目前靠链下核算</td><td>增加只读的 <code>reserveRatio()</code> 与预言机喂价</td></tr>
+            <tr><td><b>不可升级</b></td><td>bug 无法热修，只能迁移</td><td>接受此代价；配套迁移与公告预案</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="sec" id="roadmap">
+      <h2><em>11</em>Roadmap<span>路线图</span></h2>
+      <p>路线图只列已确定要做的事，不写"生态合作""百倍增长"这类无法验证的条目。</p>
+      <div class="road">
+        <div class="ph"><div class="p1">阶段 01</div><div class="p2"><b>合约原型与测试</b><span>四合约、7 项用例、部署脚本、演示页</span></div><div class="p3 done">已完成</div></div>
+        <div class="ph"><div class="p1">阶段 02</div><div class="p2"><b>修复已知限制</b><span>赎回不受暂停影响、拆分 BURNER 角色、增加储备率只读接口</span></div><div class="p3 now">进行中</div></div>
+        <div class="ph"><div class="p1">阶段 03</div><div class="p2"><b>第三方安全审计</b><span>审计报告公开，高危项全部关闭后方可进入下一阶段</span></div><div class="p3">待启动</div></div>
+        <div class="ph"><div class="p1">阶段 04</div><div class="p2"><b>测试网运行</b><span>Base Sepolia 部署，真实铸造/赎回/冻结全流程跑通，公开合约地址</span></div><div class="p3">待启动</div></div>
+        <div class="ph"><div class="p1">阶段 05</div><div class="p2"><b>合规与牌照</b><span>目标辖区法律意见、牌照申请、KYC/AML 系统接入</span></div><div class="p3">待启动</div></div>
+        <div class="ph"><div class="p1">阶段 06</div><div class="p2"><b>主网上线</b><span>多签接管权限、储备证明上线、赎回通道先行开放</span></div><div class="p3">待启动</div></div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="sec" id="glossary">
+      <h2><em>12</em>Glossary<span>术语表</span></h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>术语</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td><b>稳定币</b></td><td>价格锚定某种法币或资产的加密代币，本文中指锚定美元</td></tr>
+            <tr><td><b>储备率</b></td><td>储备资产总值 ÷ 流通代币总值，100% 表示足额</td></tr>
+            <tr><td><b>铸造 / 赎回</b></td><td>用法币换取代币 / 用代币换回法币的过程</td></tr>
+            <tr><td><b>脱锚</b></td><td>市场价格偏离锚定值，通常由信心危机引发</td></tr>
+            <tr><td><b>PoR</b></td><td>Proof of Reserves，储备证明，证明链上代币有等额资产支撑</td></tr>
+            <tr><td><b>多签</b></td><td>需要多个私钥共同签名才能执行的操作，防止单点失控</td></tr>
+            <tr><td><b>时间锁</b></td><td>关键操作执行前强制等待的时长，给外界留出反应窗口</td></tr>
+            <tr><td><b>不可转让代币</b></td><td>只能在铸造与销毁之间流转、不能在地址间转移的代币，本文的赠券即属此类</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="sec" id="disclaimer">
+      <h2><em>13</em>Disclaimer<span>免责声明</span></h2>
+      <p>本文档仅供技术说明与讨论之用，<strong>不构成任何要约、招揽、投资建议或法律意见</strong>。文中描述的功能、参数与时间表可能随时调整，且不构成对任何结果的保证。</p>
+      <p>LUSD 尚未在任何主网发行。文中出现的合约地址、市值、持币人数、流动性等数据，若在演示页面中出现，<strong>均为界面占位值，不代表真实链上状态</strong>。</p>
+      <p>数字资产存在价格波动、技术缺陷、监管变化等多重风险，可能导致全部损失。任何主体在参与前应自行评估风险，并在必要时咨询独立的财务、税务与法律顾问。</p>
+
+      <div class="pfoot">
+        <p>文档版本 v0.1（草案） · 最后更新 2026 年 10 月 · 语言：简体中文</p>
+        <div class="acts">
+          <a class="act pri" href="../">返回介绍页</a>
+          <a class="act" href="../demo/">查看代币页</a>
+          <a class="act" href="https://github.com/mrkk9919/LUSD" target="_blank" rel="noopener">查看合约源码</a>
+          <a class="act" href="#" onclick="window.print();return false;">打印 / 存为 PDF</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button id="toTop" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div id="mask"></div>
+<div class="drawer" id="drawer">
+  <div class="dt">目录 <button onclick="closeDrawer()">×</button></div>
+  <a href="#abstract"><i>00</i>摘要</a>
+  <a href="#background"><i>01</i>背景</a>
+  <a href="#principles"><i>02</i>设计原则</a>
+  <a href="#model"><i>03</i>双代币模型</a>
+  <a href="#reserve"><i>04</i>储备与铸造赎回</a>
+  <a href="#contracts"><i>05</i>合约架构</a>
+  <a href="#risk"><i>06</i>风控与冻结</a>
+  <a href="#governance"><i>07</i>治理与权限</a>
+  <a href="#compliance"><i>08</i>合规</a>
+  <a href="#disclosure"><i>09</i>风险披露</a>
+  <a href="#limits"><i>10</i>已知限制</a>
+  <a href="#roadmap"><i>11</i>路线图</a>
+  <a href="#glossary"><i>12</i>术语表</a>
+  <a href="#disclaimer"><i>13</i>免责声明</a>
+</div>
+
+<script>
+/* 阅读进度 */
+const prog = document.getElementById('prog');
+const toTop = document.getElementById('toTop');
+function onScroll(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+  prog.style.width = p + '%';
+  toTop.classList.toggle('show', h.scrollTop > 600);
+}
+document.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+/* 目录高亮 */
+const links = [...document.querySelectorAll('#tocNav a')];
+const secs = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+let ticking = false;
+function spy(){
+  let idx = 0;
+  const y = window.scrollY + 120;
+  secs.forEach((s, i) => { if (s.offsetTop <= y) idx = i; });
+  /* 滚到底部时强制高亮最后一节（末节永远到不了 120px 线） */
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 6) {
+    idx = links.length - 1;
+  }
+  links.forEach((a, i) => a.classList.toggle('on', i === idx));
+  ticking = false;
+}
+document.addEventListener('scroll', () => {
+  if (!ticking) { ticking = true; requestAnimationFrame(spy); }
+}, {passive:true});
+spy();
+
+/* 移动端目录抽屉 */
+const drawer = document.getElementById('drawer');
+const mask = document.getElementById('mask');
+document.getElementById('tocBtn').addEventListener('click', () => {
+  drawer.classList.add('on'); mask.classList.add('on');
+});
+function closeDrawer(){ drawer.classList.remove('on'); mask.classList.remove('on'); }
+mask.addEventListener('click', closeDrawer);
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setTimeout(closeDrawer, 120)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+</body>
+</html>

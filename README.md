@@ -25,6 +25,8 @@ test/
 scripts/
   deploy.js
 index.html            项目介绍页（落地页，GitHub Pages 首页）
+whitepaper/
+  index.html          技术白皮书（含目录、打印样式）
 assets/               落地页图标资源
 demo/
   index.html          移动端代币详情页（界面演示，纯前端、无依赖）
@@ -55,6 +57,7 @@ npx hardhat run scripts/deploy.js --network localhost
 |---|---|
 | `/`（根目录 `index.html`） | 项目介绍落地页：概念、运作方式、用例、透明度、风险披露、FAQ |
 | `/demo/` | 移动端代币详情页：K 线、行情、持仓、风险扫描、钱包连接 |
+| `/whitepaper/` | 技术白皮书：双代币模型、储备机制、合约架构、权限矩阵、风险披露、已知限制 |
 
 在线地址：https://mrkk9919.github.io/LUSD/
 
