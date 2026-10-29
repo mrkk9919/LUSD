@@ -73,6 +73,26 @@
   .menu button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);
     padding:10px 12px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
   .menu button:hover{background:#1c1f24}
+  /* 语言切换 */
+  .langbtn{width:auto!important;padding:0 8px!important;height:26px;border:1px solid var(--line);
+    border-radius:7px;font-size:11px!important;font-weight:700;color:var(--muted)!important;
+    letter-spacing:.02em;flex:none}
+  .langbtn:active{background:#1a1c20}
+  .langmenu{position:absolute;top:52px;right:12px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:12px;padding:6px;display:none;z-index:45;min-width:168px;
+    box-shadow:0 12px 30px rgba(0,0,0,.55)}
+  .langmenu.show{display:block}
+  .langmenu button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    text-align:left;background:none;border:none;color:var(--text);padding:10px 12px;
+    border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+  .langmenu button:hover{background:#1c1f24}
+  .langmenu button.on{color:var(--green);font-weight:600}
+  .langmenu button.on::after{content:"✓";font-size:12px}
+  @media(max-width:392px){ #starBtn{display:none} }
+  /* 越南语标签更长，收窄字号与内距保证 6 个 tab 不溢出 */
+  html[lang="vi"] .tabs button{font-size:11.5px;padding:12px 6px}
+  html[lang="vi"] .tabs button.on::after{left:6px;right:6px}
+  html[lang="en"] .tabs button{font-size:12.5px;padding:12px 8px}
   .kv.link{cursor:pointer}
   .pool{cursor:pointer}
   .ffoot span{cursor:pointer}
@@ -499,9 +519,15 @@
     </div>
     <div class="sp"></div>
     <button class="connect" id="connectBtn" onclick="connectWallet()">连接</button>
+    <button class="ico langbtn" id="langBtn" onclick="toggleLangMenu(event)">中</button>
     <button class="ico" id="starBtn" onclick="toggleStar(this)">☆</button>
     <button class="ico" onclick="toggleMore(event)">⋯</button>
   </header>
+  <div class="langmenu" id="langMenu">
+    <button data-lang="zh" onclick="setLang('zh')">中文（简体）</button>
+    <button data-lang="en" onclick="setLang('en')">English</button>
+    <button data-lang="vi" onclick="setLang('vi')">Tiếng Việt</button>
+  </div>
   <div class="menu" id="moreMenu">
     <button onclick="menuCopy()">⧉ 复制合约地址</button>
     <button onclick="menuExplorer()">↗ 在区块浏览器查看</button>
@@ -539,7 +565,7 @@
     </div>
 
     <div class="chips">
-      <span class="chipx">ⓘ Fees <b>0.30%</b></span>
+      <span class="chipx"><span class="feeslbl">ⓘ Fees</span> <b>0.30%</b></span>
       <span class="chipx">Buy/Sell tax <b>0.5% / 0.5%</b></span>
       <span class="chipx" style="color:var(--green);border-color:rgba(183,255,26,.35)">● 1:1 锚定 LUSD</span>
     </div>
@@ -972,7 +998,400 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const fmt = n => Number(n).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ================= i18n：中文 / English / Tiếng Việt ================= */
+const I18N = {
+  en: {
+ "发行公告": "Announcement",
+ "新币发行中": "Token launch",
+ "· P2P 交易功能将在 14 小时后开放": "· P2P trading opens in 14 hours",
+ "合约": "Contract",
+ "连接": "Connect",
+ "⧉ 复制合约地址": "⧉ Copy contract address",
+ "↗ 在区块浏览器查看": "↗ View on explorer",
+ "⇪ 分享": "⇪ Share",
+ "● 1:1 锚定 LUSD": "● 1:1 pegged to LUSD",
+ "支付方式": "Payment method",
+ "账": "A",
+ "越南银行账号": "Vietnamese bank account",
+ "未绑定 · 点击添加，用于 P2P 收款": "Not linked · Tap to add, for P2P payouts",
+ "我的持仓": "My holdings",
+ "持币地址": "Holders",
+ "交易活动": "Activity",
+ "仅展示最近 10 笔 · 数据为模拟": "Latest 10 only · Simulated data",
+ "流动性": "Liquidity",
+ "储备证明（Proof of Reserves）已更新：当前储备率 100.3%，全部为 1:1 USDC 储备。": "Proof of Reserves updated: current reserve ratio 100.3%, fully backed by 1:1 USDC.",
+ "储备率 100.3%": "Reserve ratio 100.3%",
+ "流通量 12.48M": "Circulating 12.48M",
+ "审计方 待公布": "Auditor TBA",
+ "新增 PancakeSwap V3 流动性池（LUSD / USDT），提升二级市场深度。": "Added a PancakeSwap V3 liquidity pool (LUSD / USDT), improving secondary market depth.",
+ "新增池子 LUSD/USDT": "New pool LUSD/USDT",
+ "初始深度 $4.82M": "Initial depth $4.82M",
+ "手续费 0.30%": "Fee 0.30%",
+ "· 可浏览商家与报价，暂不可下单": "· Browse merchants and quotes; ordering is not open yet",
+ "收款账号": "Payout account",
+ "未绑定": "Not linked",
+ "绑定越南银行账号": "Link a Vietnamese bank account",
+ "20 家越南银行 · 用于 P2P 收款": "20 Vietnamese banks · For P2P payouts",
+ "P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。": "P2P trades settle directly between users. The platform provides matching and escrow and does not set prices. All merchants have completed KYC. Funds are held in escrow after an order is placed and released once payment is confirmed. Disputes can be submitted for support arbitration.",
+ "开户银行": "Bank",
+ "银行账号": "Account number",
+ "开户人姓名（与银行一致）": "Account holder name (as registered with the bank)",
+ "确认绑定": "Confirm",
+ "账号用于接收 P2P 转账，请确保与银行预留信息一致；姓名不符会导致付款失败。演示环境仅保存在本机浏览器。": "This account receives P2P transfers. Make sure it matches your bank records; a mismatched name will cause the payment to fail. Demo only — stored in this browser.",
+ "买入 LUSD": "Buy LUSD",
+ "卖出 LUSD": "Sell LUSD",
+ "卖出": "Sell",
+ "支付": "Pay",
+ "余额 1,000.00": "Balance 1,000.00",
+ "获得": "Receive",
+ "余额 0.00": "Balance 0.00",
+ "无滑点": "No slippage",
+ "选择钱包": "Select a wallet",
+ "没有检测到浏览器钱包。你可以：": "No browser wallet detected. You can:",
+ "手机用户：在钱包 App 内置浏览器里打开本页面即可直接连接。": "On mobile: open this page in your wallet app's built-in browser to connect directly.",
+ "查看": "View",
+ "支持任意 EIP-1193 钱包 · 连接后仅读取地址，不发起任何交易": "Supports any EIP-1193 wallet · Connection only reads your address, no transactions are initiated",
+ "我的钱包": "My wallet",
+ "已连接": "Connected",
+ "复制地址": "Copy address",
+ "浏览器查看": "View on explorer",
+ "切换网络": "Switch network",
+ "断开连接": "Disconnect",
+ "LUSD 余额": "LUSD balance",
+ "ETH 余额": "ETH balance",
+ "已验证": "Verified",
+ "关闭": "Close",
+ "该代币已通过验证": "Token verified",
+ "合约地址已复制": "Contract address copied",
+ "复制失败": "Copy failed",
+ "链接已复制": "Link copied",
+ "已断开连接": "Disconnected",
+ "钱包地址已复制": "Wallet address copied",
+ "连接失败": "Connection failed",
+ "只读模式无法切换网络": "Cannot switch network in read-only mode",
+ "当前网络不是 Base，可在钱包里切换": "Current network is not Base; switch it in your wallet",
+ "请在钱包中确认": "Please confirm in your wallet",
+ "账户已冻结，无法交易": "Account frozen, trading disabled",
+ "请输入数量": "Please enter an amount",
+ "USDC 余额不足": "Insufficient USDC",
+ "LUSD 余额不足": "Insufficient LUSD",
+ "买入成功": "Purchase successful",
+ "卖出成功": "Sale successful",
+ "地址格式不正确": "Invalid address",
+ "未获取到地址": "No address received",
+ "已进入只读查看": "Read-only view enabled",
+ "已是首页": "Already on home",
+ "横屏模式": "Landscape mode",
+ "画图工具": "Drawing tools",
+ "自定义周期": "Custom interval",
+ "区间：": "Range: ",
+ "周期：": "Interval: ",
+ "请先绑定银行收款账号": "Link a bank payout account first",
+ "请先选择收款账号": "Select a payout account first",
+ "银行账号至少 6 位数字": "Account number must be at least 6 digits",
+ "银行账号过长，请核对": "Account number is too long, please check",
+ "请填写开户人姓名": "Enter the account holder name",
+ "该账号已绑定": "This account is already linked",
+ "已取消": "Cancelled",
+ "已复制账号": "Copied account",
+ "已绑定": "Linked",
+ "已解绑": "Unlinked",
+ "P2P 将于 14 小时后开放 · ": "P2P opens in 14 hours · ",
+ "更多操作": "More actions",
+ "更多设置": "More settings",
+ "P2P 收款账号": "P2P payout account",
+ "添加账号": "Add account",
+ "点击管理": " · tap to manage",
+ "，可用于 P2P 收款": ", ready for P2P payouts",
+ "商家": "merchants",
+ "按价格排序": "price sorted",
+ "orders": "orders",
+ "卖出 ": "Sell ", "买入 ": "Buy ",
+ "暂无记录": "No records",
+ "No wallet connected": "No wallet connected",
+ "连接钱包后，这里显示你的 LUSD 余额、赠券与持仓占比。": "Once connected, your LUSD balance, vouchers and allocation will appear here.",
+ "Connect wallet": "Connect wallet",
+ "Read-only": "Read-only",
+ "Connected": "Connected",
+ "Total balance": "Total balance",
+ "余额 ": "Balance ", "例如 0071000123456": "e.g. 0071000123456",
+ "或输入地址只读查看": "or enter an address to view read-only",
+ "ⓘ Fees": "ⓘ Fees"
+},
+  vi: {
+ "发行公告": "Thông báo",
+ "新币发行中": "Đang phát hành token",
+ "· P2P 交易功能将在 14 小时后开放": "· Tính năng P2P sẽ mở sau 14 giờ",
+ "合约": "Hợp đồng",
+ "连接": "Kết nối",
+ "⧉ 复制合约地址": "⧉ Sao chép địa chỉ hợp đồng",
+ "↗ 在区块浏览器查看": "↗ Xem trên explorer",
+ "⇪ 分享": "⇪ Chia sẻ",
+ "● 1:1 锚定 LUSD": "● Neo 1:1 với LUSD",
+ "支付方式": "Phương thức thanh toán",
+ "账": "TK",
+ "越南银行账号": "Tài khoản ngân hàng Việt Nam",
+ "未绑定 · 点击添加，用于 P2P 收款": "Chưa liên kết · Nhấn để thêm, dùng nhận tiền P2P",
+ "我的持仓": "Tài sản của tôi",
+ "持币地址": "Địa chỉ nắm giữ",
+ "交易活动": "Hoạt động giao dịch",
+ "仅展示最近 10 笔 · 数据为模拟": "Chỉ hiện 10 giao dịch gần nhất · Dữ liệu mô phỏng",
+ "流动性": "Thanh khoản",
+ "储备证明（Proof of Reserves）已更新：当前储备率 100.3%，全部为 1:1 USDC 储备。": "Bằng chứng dự trữ (Proof of Reserves) đã cập nhật: tỷ lệ dự trữ hiện tại 100,3%, toàn bộ là dự trữ USDC 1:1.",
+ "储备率 100.3%": "Tỷ lệ dự trữ 100,3%",
+ "流通量 12.48M": "Lưu hành 12,48M",
+ "审计方 待公布": "Đơn vị kiểm toán Chờ công bố",
+ "新增 PancakeSwap V3 流动性池（LUSD / USDT），提升二级市场深度。": "Đã thêm pool thanh khoản PancakeSwap V3 (LUSD / USDT), tăng độ sâu thị trường thứ cấp.",
+ "新增池子 LUSD/USDT": "Pool mới LUSD/USDT",
+ "初始深度 $4.82M": "Độ sâu ban đầu $4,82M",
+ "手续费 0.30%": "Phí 0,30%",
+ "· 可浏览商家与报价，暂不可下单": "· Xem được người bán và báo giá, chưa thể đặt lệnh",
+ "收款账号": "Tài khoản nhận tiền",
+ "未绑定": "Chưa liên kết",
+ "绑定越南银行账号": "Liên kết tài khoản ngân hàng VN",
+ "20 家越南银行 · 用于 P2P 收款": "20 ngân hàng Việt Nam · Nhận tiền P2P",
+ "P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。": "Giao dịch P2P diễn ra trực tiếp giữa người dùng; nền tảng chỉ khớp lệnh và bảo lãnh, không tham gia định giá. Tất cả người bán đã hoàn thành KYC. Sau khi đặt lệnh, tài sản được nền tảng giữ hộ và giải phóng khi xác nhận đã nhận tiền. Nếu có tranh chấp, có thể gửi yêu cầu trọng tài.",
+ "开户银行": "Ngân hàng",
+ "银行账号": "Số tài khoản",
+ "开户人姓名（与银行一致）": "Tên chủ tài khoản (khớp với ngân hàng)",
+ "确认绑定": "Xác nhận liên kết",
+ "账号用于接收 P2P 转账，请确保与银行预留信息一致；姓名不符会导致付款失败。演示环境仅保存在本机浏览器。": "Tài khoản dùng để nhận chuyển khoản P2P, vui lòng đảm bảo khớp với thông tin ngân hàng; sai tên sẽ khiến giao dịch thất bại. Bản demo chỉ lưu trên trình duyệt này.",
+ "买入 LUSD": "Mua LUSD",
+ "卖出 LUSD": "Bán LUSD",
+ "卖出": "Bán",
+ "支付": "Thanh toán",
+ "余额 1,000.00": "Số dư 1.000,00",
+ "获得": "Nhận được",
+ "余额 0.00": "Số dư 0,00",
+ "无滑点": "Không trượt giá",
+ "选择钱包": "Chọn ví",
+ "没有检测到浏览器钱包。你可以：": "Không phát hiện ví trong trình duyệt. Bạn có thể:",
+ "手机用户：在钱包 App 内置浏览器里打开本页面即可直接连接。": "Trên di động: mở trang này trong trình duyệt tích hợp của ứng dụng ví để kết nối trực tiếp.",
+ "查看": "Xem",
+ "支持任意 EIP-1193 钱包 · 连接后仅读取地址，不发起任何交易": "Hỗ trợ mọi ví EIP-1193 · Chỉ đọc địa chỉ sau khi kết nối, không phát sinh giao dịch",
+ "我的钱包": "Ví của tôi",
+ "已连接": "Đã kết nối",
+ "复制地址": "Sao chép địa chỉ",
+ "浏览器查看": "Xem trên explorer",
+ "切换网络": "Chuyển mạng",
+ "断开连接": "Ngắt kết nối",
+ "LUSD 余额": "Số dư LUSD",
+ "ETH 余额": "Số dư ETH",
+ "已验证": "Đã xác minh",
+ "关闭": "Đóng",
+ "该代币已通过验证": "Token đã được xác minh",
+ "合约地址已复制": "Đã sao chép địa chỉ hợp đồng",
+ "复制失败": "Sao chép thất bại",
+ "链接已复制": "Đã sao chép liên kết",
+ "已断开连接": "Đã ngắt kết nối",
+ "钱包地址已复制": "Đã sao chép địa chỉ ví",
+ "连接失败": "Kết nối thất bại",
+ "只读模式无法切换网络": "Không thể chuyển mạng ở chế độ chỉ đọc",
+ "当前网络不是 Base，可在钱包里切换": "Mạng hiện tại không phải Base, hãy chuyển trong ví",
+ "请在钱包中确认": "Vui lòng xác nhận trong ví",
+ "账户已冻结，无法交易": "Tài khoản đã bị đóng băng, không thể giao dịch",
+ "请输入数量": "Vui lòng nhập số lượng",
+ "USDC 余额不足": "Không đủ USDC",
+ "LUSD 余额不足": "Không đủ LUSD",
+ "买入成功": "Mua thành công",
+ "卖出成功": "Bán thành công",
+ "地址格式不正确": "Địa chỉ không hợp lệ",
+ "未获取到地址": "Không nhận được địa chỉ",
+ "已进入只读查看": "Đã bật chế độ chỉ xem",
+ "已是首页": "Đã ở trang chủ",
+ "横屏模式": "Chế độ ngang",
+ "画图工具": "Công cụ vẽ",
+ "自定义周期": "Khung thời gian tuỳ chỉnh",
+ "区间：": "Khoảng: ",
+ "周期：": "Khung: ",
+ "请先绑定银行收款账号": "Vui lòng liên kết tài khoản nhận tiền trước",
+ "请先选择收款账号": "Vui lòng chọn tài khoản nhận tiền",
+ "银行账号至少 6 位数字": "Số tài khoản phải có ít nhất 6 chữ số",
+ "银行账号过长，请核对": "Số tài khoản quá dài, vui lòng kiểm tra",
+ "请填写开户人姓名": "Vui lòng nhập tên chủ tài khoản",
+ "该账号已绑定": "Tài khoản này đã được liên kết",
+ "已取消": "Đã huỷ",
+ "已复制账号": "Đã sao chép tài khoản",
+ "已绑定": "Đã liên kết",
+ "已解绑": "Đã huỷ liên kết",
+ "P2P 将于 14 小时后开放 · ": "P2P mở sau 14 giờ · ",
+ "更多操作": "Thao tác khác",
+ "更多设置": "Cài đặt khác",
+ "P2P 收款账号": "Tài khoản nhận tiền P2P",
+ "添加账号": "Thêm tài khoản",
+ "点击管理": " · nhấn để quản lý",
+ "，可用于 P2P 收款": ", dùng để nhận tiền P2P",
+ "商家": "người bán",
+ "按价格排序": "sắp theo giá",
+ "orders": "đơn",
+ "卖出 ": "Bán ", "买入 ": "Mua ",
+ "暂无记录": "Chưa có dữ liệu",
+ "No wallet connected": "Chưa kết nối ví",
+ "连接钱包后，这里显示你的 LUSD 余额、赠券与持仓占比。": "Sau khi kết nối, số dư LUSD, phiếu thưởng và tỷ trọng nắm giữ sẽ hiển thị tại đây.",
+ "Connect wallet": "Kết nối ví",
+ "Read-only": "Chỉ đọc",
+ "Connected": "Đã kết nối",
+ "Total balance": "Tổng số dư",
+ "ⓘ Fees": "ⓘ Phí",
+ "余额 ": "Số dư ", "例如 0071000123456": "VD: 0071000123456",
+ "或输入地址只读查看": "hoặc nhập địa chỉ để xem chỉ đọc",
+ "Bank transfer": "Chuyển khoản",
+ "Wise": "Wise",
+ "Charts": "Biểu đồ",
+ "Info": "Thông tin",
+ "Data": "Dữ liệu",
+ "Risk": "Rủi ro",
+ "Feeds": "Bảng tin",
+ "Holdings": "Tài sản",
+ "Holders": "Người nắm giữ",
+ "Activity": "Hoạt động",
+ "Liquidity": "Thanh khoản",
+ "Market cap": "Vốn hoá",
+ "24h volume": "KL 24h",
+ "Top 10": "Top 10",
+ "Supply": "Nguồn cung",
+ "Fees": "Phí",
+ "Buy/Sell tax": "Phí mua/bán",
+ "Contract address": "Địa chỉ hợp đồng",
+ "Created at": "Tạo lúc",
+ "Transaction info": "Thông tin giao dịch",
+ "Market info": "Thông tin thị trường",
+ "About": "Giới thiệu",
+ "Key Features": "Tính năng chính",
+ "Total vol": "Tổng KL",
+ "Net vol": "KL ròng",
+ "Circulating supply": "Cung lưu hành",
+ "Maximum supply": "Cung tối đa",
+ "Network": "Mạng",
+ "Creator": "Người tạo",
+ "Verified merchants": "Người bán đã xác minh",
+ "I want to pay": "Tôi muốn trả",
+ "You receive": "Bạn nhận được",
+ "Buy LUSD": "Mua LUSD",
+ "Sell LUSD": "Bán LUSD",
+ "Buy": "Mua",
+ "Sell": "Bán",
+ "Change in holders": "Thay đổi người nắm giữ",
+ "All holders": "Tất cả người nắm giữ",
+ "Total liquidity": "Tổng thanh khoản",
+ "Top 5 pools": "Top 5 pool",
+ "Swap analysis": "Phân tích giao dịch",
+ "Risks": "Rủi ro",
+ "Cautions": "Cảnh báo",
+ "Unlikely to be a honeypot token": "Khó có thể là token honeypot",
+ "No malicious code is found in this token at the moment.": "Hiện chưa phát hiện mã độc trong token này.",
+ "Search on X": "Tìm trên X",
+ "By token name": "Theo tên token",
+ "By contract address": "Theo địa chỉ hợp đồng",
+ "More ▾": "Thêm ▾",
+ "Type / Time": "Loại / Thời gian",
+ "Amount / Value": "Số lượng / Giá trị",
+ "Address": "Địa chỉ",
+ "All": "Tất cả",
+ "Add": "Thêm",
+ "Remove": "Rút",
+ "Total liquidity · 24h": "Tổng thanh khoản · 24h",
+ "P2P opens in": "P2P mở sau",
+ "50 merchants · price sorted": "50 người bán · sắp theo giá",
+ "Dev": "Nhà phát triển",
+ "Insider": "Nội bộ",
+ "This security review is solely for evaluating token safety. Its accuracy isn't 100% guaranteed. It doesn't constitute an endorsement or recommendation.": "Bản đánh giá bảo mật này chỉ nhằm đánh giá độ an toàn của token. Không đảm bảo chính xác 100%. Không cấu thành sự chứng thực hay khuyến nghị."
+}
+};
+const LANG_NAME = { zh:'中文', en:'English', vi:'Tiếng Việt' };
+const LANG_SHORT = { zh:'中', en:'EN', vi:'VI' };
+let LANG = 'zh';
+try{
+  const saved = localStorage.getItem('lusd_lang');
+  if(saved==='zh'||saved==='en'||saved==='vi') LANG = saved;
+  else {
+    const nl = (navigator.language||'').toLowerCase();
+    if(nl.indexOf('vi')===0) LANG = 'vi';
+    else if(nl.indexOf('en')===0) LANG = 'en';
+  }
+}catch(_){}
+
+function T(s){
+  if(!s || LANG==='zh') return s;
+  const d = I18N[LANG];
+  return (d && d[s]!==undefined) ? d[s] : s;
+}
+function localeOf(){ return LANG==='vi' ? 'vi-VN' : (LANG==='en' ? 'en-US' : 'zh-CN'); }
+
+/* 静态文本：遍历文本节点，首次记录原文，之后按语言替换 */
+const ORIG_TEXT = new WeakMap();
+function applyI18n(){
+  const skip = { SCRIPT:1, STYLE:1, TEXTAREA:1 };
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+  let n;
+  while(n = walker.nextNode()){
+    const p = n.parentNode;
+    if(!p || skip[p.nodeName]) continue;
+    let raw = ORIG_TEXT.get(n);
+    if(raw === undefined){ raw = n.nodeValue; ORIG_TEXT.set(n, raw); }
+    const key = raw.trim().replace(/\s+/g,' ');
+    if(!key) continue;
+    const tr = T(key);
+    if(tr === key){ n.nodeValue = raw; continue; }
+    const lead = raw.match(/^\s*/)[0], tail = raw.match(/\s*$/)[0];
+    n.nodeValue = lead + tr + tail;
+  }
+  document.querySelectorAll('[placeholder]').forEach(el=>{
+    if(el.__ph===undefined) el.__ph = el.getAttribute('placeholder');
+    el.setAttribute('placeholder', T(el.__ph));
+  });
+  document.querySelectorAll('[title]').forEach(el=>{
+    if(el.__ti===undefined) el.__ti = el.getAttribute('title');
+    el.setAttribute('title', T(el.__ti));
+  });
+  document.querySelectorAll('[aria-label]').forEach(el=>{
+    if(el.__al===undefined) el.__al = el.getAttribute('aria-label');
+    el.setAttribute('aria-label', T(el.__al));
+  });
+  const btn = $('langBtn'); if(btn) btn.textContent = LANG_SHORT[LANG];
+  document.querySelectorAll('#langMenu button').forEach(b=>{
+    b.classList.toggle('on', b.dataset.lang===LANG);
+  });
+  document.documentElement.lang = LANG==='zh' ? 'zh-CN' : LANG;
+}
+
+function setLang(l){
+  if(l!==LANG){
+    LANG = l;
+    try{ localStorage.setItem('lusd_lang', l); }catch(_){}
+  }
+  closeLangMenu();
+  applyI18n();
+  rerenderDynamic();
+}
+
+function rerenderDynamic(){
+  try{ renderPay(); }catch(_){}
+  try{ renderAcctList(); }catch(_){}
+  try{ renderP2P(); }catch(_){}
+  try{ calcP2P(); }catch(_){}
+  try{ renderTx(); }catch(_){}
+  try{ renderLiq(); }catch(_){}
+  try{ renderHoldings(); }catch(_){}
+  try{ updateConnectBtn(); }catch(_){}
+}
+
+function toggleLangMenu(e){
+  e.stopPropagation();
+  const m=$('langMenu'); if(!m) return;
+  const open = m.classList.contains('show');
+  const mm=$('moreMenu'); if(mm) mm.classList.remove('show');
+  m.classList.toggle('show', !open);
+}
+function closeLangMenu(){ const m=$('langMenu'); if(m) m.classList.remove('show'); }
+document.addEventListener('click', e=>{
+  const m=$('langMenu');
+  if(m && m.classList.contains('show') && !m.contains(e.target)) closeLangMenu();
+});
+/* ==================================================================== */
+
+const fmt = n => Number(n).toLocaleString(localeOf(),{minimumFractionDigits:2,maximumFractionDigits:2});
 const ADDR = '0x0d26b3f7c8a1e4d29b6f0c3e5d7a1f2c4e6d8b0a9c';
 const state = { usdc:1000, lusd:0, frozen:false, mode:'buy' };
 
@@ -1086,13 +1505,13 @@ function setMode(m){
   state.mode=m;
   $('segBuy').className = m==='buy'?'on b':'';
   $('segSell').className = m==='sell'?'on s':'';
-  $('sheetTitle').textContent = m==='buy'?'买入 LUSD':'卖出 LUSD';
-  $('payLab').textContent = m==='buy'?'支付':'卖出';
+  $('sheetTitle').textContent = m==='buy'?T('买入 LUSD'):T('卖出 LUSD');
+  $('payLab').textContent = m==='buy'?T('支付'):T('卖出');
   $('paySym').textContent = m==='buy'?'USDC':'LUSD';
   $('goBtn').className = 'go ' + (m==='buy'?'b':'s');
-  $('goBtn').textContent = m==='buy'?'买入 LUSD':'卖出 LUSD';
-  $('payBal').textContent = '余额 ' + fmt(m==='buy'?state.usdc:state.lusd) + (m==='buy'?' USDC':' LUSD');
-  $('recvBal').textContent = '余额 ' + fmt(m==='buy'?state.lusd:state.usdc) + (m==='buy'?' LUSD':' USDC');
+  $('goBtn').textContent = m==='buy'?T('买入 LUSD'):T('卖出 LUSD');
+  $('payBal').textContent = T('余额 ')+fmt(m==='buy'?state.usdc:state.lusd)+(m==='buy'?' USDC':' LUSD');
+  $('recvBal').textContent = T('余额 ')+fmt(m==='buy'?state.lusd:state.usdc)+(m==='buy'?' LUSD':' USDC');
   quote();
 }
 function quote(){ const v=parseFloat($('amount').value)||0; $('recv').value=fmt(v); }
@@ -1159,7 +1578,7 @@ const short=a=>a?a.slice(0,4)+'…'+a.slice(-4):'';
 function updateConnectBtn(){
   const b=$('connectBtn');
   if(connectedAddr){ b.textContent=short(connectedAddr); b.classList.add('connected'); b.title=connectedAddr; }
-  else { b.textContent='连接'; b.classList.remove('connected'); b.title=''; }
+  else { b.textContent=T('连接'); b.classList.remove('connected'); b.title=''; }
   try{ if(typeof renderHoldings==='function' && $('holdBox')) renderHoldings(); }catch(_){}
 }
 function bindProvider(w){
@@ -1184,7 +1603,7 @@ async function doConnect(w){
     bindProvider(w);
     try{ chainId=await w.provider.request({method:'eth_chainId'}); }catch(_){}
     updateConnectBtn(); persistWallet(); closeModal(); renderWallet();
-    toast('已连接：'+short(a));
+    toast(T('已连接')+'：'+short(a));
     if((chainId||'').toLowerCase()!=='0x2105'){
       const ok=await trySwitchBase();
       if(!ok) toast('当前网络不是 Base，可在钱包里切换',true);
@@ -1310,7 +1729,7 @@ async function restoreWallet(){
 
 function copyAddr(){ navigator.clipboard?.writeText(ADDR).then(()=>toast('合约地址已复制')).catch(()=>toast('复制失败')); }
 let tt=null;
-function toast(m,bad=false){ const el=$('toast'); el.textContent=m;
+function toast(m,bad=false){ const el=$('toast'); el.textContent=T(m);
   const up=document.querySelector('.sheet.show,.modal.show');
   el.className='toast show'+(bad?' bad':'')+(up?' top':'');
   clearTimeout(tt); tt=setTimeout(()=>{el.className='toast'+(bad?' bad':'')+(up?' top':'')},2300); }
@@ -1323,7 +1742,7 @@ function toggleStar(el){
   el.style.color = on ? '' : '#ffd24a';
   toast(on ? '已取消收藏' : '已收藏');
 }
-function toggleMore(e){ e.stopPropagation(); $('moreMenu').classList.toggle('show'); }
+function toggleMore(e){ e.stopPropagation(); closeLangMenu(); $('moreMenu').classList.toggle('show'); }
 document.addEventListener('click', (ev)=>{
   const m=$('moreMenu'); if(m && !m.contains(ev.target)) m.classList.remove('show');
 });
@@ -1339,12 +1758,12 @@ function setTf(el){
   const row=el.parentNode;
   row.querySelectorAll('button[data-tf]').forEach(b=>b.classList.remove('on'));
   el.classList.add('on'); curTf=el.dataset.tf; $('tfLabel').textContent=curTf;
-  drawCandles(); toast('周期：'+curTf);
+  drawCandles(); toast(T('周期：')+curTf);
 }
 function setDataTf(el){
   const row=el.parentNode;
   row.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on'); drawLiqBars(); toast('区间：'+el.textContent);
+  el.classList.add('on'); drawLiqBars(); toast(T('区间：')+el.textContent);
 }
 
 /* ---- 图表弹层：周期 / 设置 / 指标 ---- */
@@ -1367,7 +1786,7 @@ function openInterval(){
 function pickInterval(x, el){
   curTf=x; $('tfLabel').textContent=x;
   document.querySelectorAll('#tfCharts button[data-tf]').forEach(b=>b.classList.toggle('on', b.dataset.tf===x));
-  drawCandles(); closeChartSheet(); toast('周期：'+x);
+  drawCandles(); closeChartSheet(); toast(T('周期：')+x);
 }
 function openChartSettings(){
   openChartSheet(`
@@ -1441,16 +1860,16 @@ function renderHoldings(){
   const box=$('holdBox'); if(!box) return;
   if(!connectedAddr){
     box.innerHTML='<div class="hold-empty">'
-      +'<div class="he-t">No wallet connected</div>'
-      +'<div class="he-s">连接钱包后，这里显示你的 LUSD 余额、赠券与持仓占比。</div>'
-      +'<button class="he-b" onclick="connectWallet()">Connect wallet</button>'
+      +'<div class="he-t">'+T('No wallet connected')+'</div>'
+      +'<div class="he-s">'+T('连接钱包后，这里显示你的 LUSD 余额、赠券与持仓占比。')+'</div>'
+      +'<button class="he-b" onclick="connectWallet()">'+T('Connect wallet')+'</button>'
       +'</div>';
     return;
   }
   box.innerHTML='<div class="hold-top"><span>'+short(connectedAddr)+'</span><span>'
-    +(readOnly?'Read-only':(activeWallet?activeWallet.name:'Connected'))+'</span></div>'
+    +(readOnly?T('Read-only'):(activeWallet?activeWallet.name:T('Connected')))+'</span></div>'
     +'<div class="hold-bal" id="holdBal">—<small>LUSD</small></div>'
-    +'<div class="hold-sub">Total balance</div>'
+    +'<div class="hold-sub">'+T('Total balance')+'</div>'
     +'<div style="margin-top:16px">'
     +'<div class="hold-row"><span>Wallet</span><span class="mono" style="font-size:11px">'+short(connectedAddr)+'</span></div>'
     +'<div class="hold-row"><span>Network</span><span>'+(CHAINS[(chainId||'').toLowerCase()]||'—')+'</span></div>'
@@ -1495,7 +1914,7 @@ function renderTx(){
 }
 function txDetail(i){
   const x=TXS[i]; if(!x) return;
-  toast((x.t==='s'?'卖出 ':'买入 ')+x.qty+' LUSD · '+x.time);
+  toast(T(x.t==='s'?'卖出 ':'买入 ')+x.qty+' LUSD · '+x.time);
 }
 
 /* ---- 流动性 ---- */
@@ -1515,11 +1934,11 @@ function setLiqFilter(el,mode){
 function renderLiq(){
   const box=$('liqList'); if(!box) return;
   const rows=LIQ.filter(x=>liqFilter==='all'||x.t===liqFilter);
-  if(!rows.length){ box.innerHTML='<div style="padding:24px 0;text-align:center;font-size:12px;color:var(--dim)">暂无记录</div>'; return; }
+  if(!rows.length){ box.innerHTML='<div style="padding:24px 0;text-align:center;font-size:12px;color:var(--dim)">'+T('暂无记录')+'</div>'; return; }
   box.innerHTML=rows.map(x=>
     '<div class="lqrow">'
     +'<div class="lq-ic '+(x.t==='add'?'add':'rem')+'">'+(x.t==='add'?'+':'−')+'</div>'
-    +'<div class="lq-i"><b>'+(x.t==='add'?'Add':'Remove')+'</b><span>'+x.d+'</span></div>'
+    +'<div class="lq-i"><b>'+T(x.t==='add'?'Add':'Remove')+'</b><span>'+x.d+'</span></div>'
     +'<div class="lq-q"><em class="'+(x.t==='add'?'p':'n')+'">'+x.a1+'</em>'
     +'<em class="'+(x.t==='add'?'p':'n')+'">'+x.a2+'</em></div>'
     +'<div class="lq-v">'+x.v+'</div>'
@@ -1584,20 +2003,20 @@ function renderP2P(){
   const list=$('p2pList'); if(!list) return;
   const rows=P2P[p2pMode]||[];
   const cnt=$('p2pCount');
-  if(cnt) cnt.textContent=rows.length+' merchants · price sorted';
+  if(cnt) cnt.textContent=rows.length+' '+T('商家')+' · '+T('按价格排序');
   list.innerHTML=rows.map((o,i)=>
     '<div class="p2p-row">'
     +'<div class="p2p-av">'+o.n.charAt(0)+'</div>'
     +'<div class="p2p-i">'
       +'<div class="p2p-n">'+o.n+(o.v?'<span class="vf">KYC</span>':'')+'</div>'
-      +'<div class="p2p-m">'+o.orders+' orders · '+o.rate+'</div>'
-      +'<div class="p2p-pay">'+o.pay+'</div>'
+      +'<div class="p2p-m">'+o.orders+' '+T('orders')+' · '+o.rate+'</div>'
+      +'<div class="p2p-pay">'+T(o.pay)+'</div>'
     +'</div>'
     +'<div class="p2p-r">'
       +'<div class="p2p-price">'+o.price.toFixed(4)+'</div>'
       +'<div class="p2p-lim">$'+o.min+' – $'+o.max+'</div>'
       +'<button class="p2p-btn'+(p2pMode==='sell'?' sell':'')+'" onclick="p2pOrder('+i+')">'
-        +(p2pMode==='buy'?'Buy':'Sell')+'</button>'
+        +(p2pMode==='buy'?T('Buy'):T('Sell'))+'</button>'
     +'</div>'
     +'</div>').join('');
 }
@@ -1617,7 +2036,7 @@ function p2pOrder(i){
   const a=ACCTS[paySel];
   if(!ACCTS.length){ toast('请先绑定银行收款账号',true); openAcctSheet(); return; }
   if(!a){ toast('请先选择收款账号',true); return; }
-  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
+  toast(T('P2P 将于 14 小时后开放 · ')+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
 }
 
 /* ---- 越南银行账号绑定（P2P 收款账号） ---- */
@@ -1647,20 +2066,24 @@ function renderPay(){
   ACCTS.forEach((a,i)=>{
     html+='<span class="chipx'+(i===paySel?' on':'')+'" onclick="pickAcct('+i+')">'+a.s+' '+maskAcct(a.no)+'</span>';
   });
-  if(ACCTS.length) html+='<span class="chipx add" onclick="openAcctSheet()">+ 添加账号</span>';
+  if(ACCTS.length) html+='<span class="chipx add" onclick="openAcctSheet()">+ '+T('添加账号')+'</span>';
   box.innerHTML=html;
 
   const box2=$('payBox'), empty=$('payEmpty'), stat=$('payStat');
   const has = ACCTS.length>0;
   if(box2) box2.classList.toggle('empty', !has);
   if(empty) empty.style.display = has ? 'none' : 'flex';
-  if(stat) stat.textContent = has ? ('已绑定 '+ACCTS.length+' 个') : '未绑定';
+  if(stat) stat.textContent = has
+    ? (LANG==='zh' ? '已绑定 '+ACCTS.length+' 个'
+     : LANG==='en' ? ACCTS.length+' linked'
+     : ACCTS.length+' tài khoản')
+    : T('未绑定');
 
   const ic=$('infoCardStat');
   if(ic){
     const a=ACCTS[paySel]||ACCTS[0];
-    ic.textContent = a ? (a.s+' '+maskAcct(a.no)+' · 点击管理')
-                       : '未绑定 · 点击添加，用于 P2P 收款';
+    ic.textContent = a ? (a.s+' '+maskAcct(a.no)+T('点击管理'))
+                       : T('未绑定 · 点击添加，用于 P2P 收款');
   }
 }
 
@@ -1684,14 +2107,14 @@ function renderAcctList(){
 function copyAcct(i){
   const a=ACCTS[i]; if(!a) return;
   navigator.clipboard && navigator.clipboard.writeText(a.no).catch(()=>{});
-  toast('已复制账号 '+a.no);
+  toast(T('已复制账号')+' '+a.no);
 }
 function delAcct(i){
   const a=ACCTS[i];
   ACCTS.splice(i,1);
   if(paySel>=ACCTS.length) paySel=Math.max(0,ACCTS.length-1);
   saveAccts(); renderAcctList(); renderPay();
-  if(a) toast('已解绑 '+a.s+' '+maskAcct(a.no));
+  if(a) toast(T('已解绑')+' '+a.s+' '+maskAcct(a.no));
 }
 function saveAccts(){ try{ localStorage.setItem(ACCT_KEY, JSON.stringify(ACCTS)); }catch(_){} }
 
@@ -1713,12 +2136,12 @@ function saveAcct(){
   saveAccts(); renderAcctList(); renderPay();
   $('acctNo').value=''; $('acctName').value='';
   closeAcctSheet();
-  toast('已绑定 '+code+' '+maskAcct(no)+'，可用于 P2P 收款');
+  toast(T('已绑定')+' '+code+' '+maskAcct(no)+T('，可用于 P2P 收款'));
 }
 
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
 renderHoldings(); renderTx(); renderLiq(); renderP2P(); calcP2P();
-initBanks(); renderPay();
+initBanks(); renderPay(); applyI18n();
 </script>
 </body>
 </html>
