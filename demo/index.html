@@ -101,6 +101,9 @@
   .chips{display:flex;gap:8px;margin:6px 0 12px;flex-wrap:wrap}
   .chipx{display:flex;align-items:center;gap:5px;background:#14161a;border:1px solid var(--line);
     border-radius:8px;padding:6px 9px;font-size:11.5px;color:var(--muted)}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap}
+  .chiprow .chipx{font-family:inherit;cursor:pointer;transition:.15s}
+  .chiprow .chipx.on{background:rgba(183,255,26,.13);border-color:rgba(183,255,26,.38);color:var(--green)}
   .chipx b{color:var(--text);font-weight:600}
   .tfrow{display:flex;align-items:center;gap:2px;margin:4px 0 6px}
   .tfrow button{background:none;border:none;color:var(--dim);font-size:12px;padding:6px 9px;border-radius:7px;cursor:pointer;font-family:inherit}
@@ -196,7 +199,8 @@
   .pool{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #17191d}
   .pool:last-child{border-bottom:none}
   .pool .pl{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f7b733,#fc4a1a);
-    display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;
+    flex:none;letter-spacing:0}
   .pool .pl.blue{background:linear-gradient(135deg,#3b82f6,#8b5cf6)}
   .pool .pl.green{background:linear-gradient(135deg,#16c784,#0ea86b)}
   .pool .pi{flex:1;min-width:0}
@@ -205,6 +209,65 @@
   .pool .pv{font-size:13.5px;font-weight:700;white-space:nowrap}
   .pool .pv.dim{color:var(--muted);font-weight:500}
   .notrouted{display:inline-block;font-size:10.5px;color:var(--muted);background:#1a1d23;border-radius:5px;padding:2px 6px;margin-top:4px}
+
+  /* data 子导航 */
+  .subnav{display:flex;margin:2px 0 14px;border-bottom:1px solid var(--line)}
+  .subnav button{flex:1;background:none;border:0;font-family:inherit;font-size:12.5px;font-weight:600;
+    color:var(--muted);padding:10px 2px;position:relative;cursor:pointer;white-space:nowrap}
+  .subnav button.on{color:var(--text)}
+  .subnav button.on::after{content:"";position:absolute;left:16%;right:16%;bottom:-1px;height:2px;
+    background:var(--green);border-radius:2px}
+
+  /* 交易活动 */
+  .txhead{display:flex;font-size:10.5px;color:var(--dim);padding:0 2px 8px}
+  .txhead span:first-child{width:100px;flex:none}
+  .txhead span:nth-child(2){flex:1;text-align:right}
+  .txhead span:last-child{width:82px;flex:none;text-align:right}
+  .txrow{display:flex;align-items:flex-start;padding:11px 0;border-bottom:1px solid #17191d;cursor:pointer}
+  .txrow:last-child{border-bottom:0}
+  .txrow:active{background:#15171b}
+  .tx-l{width:100px;flex:none}
+  .tx-type{font-size:11.5px;font-weight:700;letter-spacing:.02em}
+  .tx-type.s{color:var(--pink)}
+  .tx-type.b{color:var(--green)}
+  .tx-type span{margin-left:3px}
+  .tx-time{font-size:10.5px;color:var(--dim);margin-top:3px}
+  .tx-m{flex:1;text-align:right;min-width:0;padding:0 6px}
+  .tx-total{font-size:12.5px;font-weight:600}
+  .tx-price{font-size:10.5px;color:var(--muted);margin-top:3px}
+  .tx-a{width:82px;flex:none;text-align:right;font-size:10.5px;color:var(--muted);
+    font-family:ui-monospace,Menlo,monospace}
+
+  /* 流动性事件 */
+  .lqrow{display:flex;align-items:center;gap:9px;padding:12px 0;border-bottom:1px solid #17191d}
+  .lqrow:last-child{border-bottom:0}
+  .lq-ic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;flex:none;line-height:1}
+  .lq-ic.add{background:rgba(183,255,26,.13);color:var(--green)}
+  .lq-ic.rem{background:rgba(255,45,120,.13);color:var(--pink)}
+  .lq-i{flex:1;min-width:0}
+  .lq-i b{display:block;font-size:12.5px;font-weight:600}
+  .lq-i span{display:block;font-size:10.5px;color:var(--dim);margin-top:2px}
+  .lq-q{text-align:right;flex:none}
+  .lq-q em{display:block;font-style:normal;font-size:10.5px;font-weight:600;line-height:1.5}
+  .lq-q em.p{color:var(--green)}
+  .lq-q em.n{color:var(--pink)}
+  .lq-v{width:72px;flex:none;text-align:right;font-size:11.5px;font-weight:600}
+
+  /* 持仓空态 */
+  .hold-empty{text-align:center;padding:22px 8px}
+  .he-t{font-size:13.5px;font-weight:600}
+  .he-s{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.6}
+  .he-b{margin-top:14px;background:var(--green);color:#0a0b0d;border:0;border-radius:10px;
+    padding:9px 22px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
+  .hold-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+  .hold-bal{font-size:26px;font-weight:700;margin-top:12px;letter-spacing:-.5px}
+  .hold-bal small{font-size:13px;font-weight:600;color:var(--muted);margin-left:5px}
+  .hold-sub{font-size:11px;color:var(--dim);margin-top:3px}
+  .hold-row{display:flex;justify-content:space-between;font-size:12px;padding:11px 0;
+    border-bottom:1px solid #17191d}
+  .hold-row:last-child{border-bottom:0}
+  .hold-row span:last-child{font-weight:600}
 
   /* risk */
   .disclaimer{font-size:13px;color:var(--muted);line-height:1.65;margin:2px 0 18px}
@@ -489,45 +552,86 @@
 
   <!-- Data -->
   <section class="tabpane" id="tab-data">
-    <div class="h3" style="margin-top:4px">Change in holders</div>
-    <div class="card" style="padding:12px 14px">
-      <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">All holders</div>
-      <svg viewBox="0 0 340 110" width="100%" height="auto">
-        <line x1="0" y1="20" x2="340" y2="20" stroke="#17191d"/>
-        <line x1="0" y1="50" x2="340" y2="50" stroke="#17191d"/>
-        <line x1="0" y1="80" x2="340" y2="80" stroke="#17191d"/>
-        <path d="M0 55 L340 52" fill="none" stroke="#b7ff1a" stroke-width="2"/>
-      </svg>
-      <div class="axisx"><span>10/26</span><span>10/27</span><span>10/27</span><span>10/28</span><span>10/28</span></div>
+    <div class="subnav" id="subnav">
+      <button class="on" onclick="switchSub('holdings')">Holdings</button>
+      <button onclick="switchSub('holders')">Holders</button>
+      <button onclick="switchSub('activity')">Activity</button>
+      <button onclick="switchSub('liquidity')">Liquidity</button>
     </div>
 
-    <div class="h3">Total liquidity</div>
-    <div class="tfrow" id="tfData" style="margin-bottom:6px">
-      <button onclick="setDataTf(this)">4h</button>
-      <button class="on" onclick="setDataTf(this)">24h</button>
-      <button onclick="setDataTf(this)">7D</button>
-    </div>
-    <div class="card" style="padding:12px 14px">
-      <div class="barchart" id="liqBars"></div>
-      <div class="axisx"><span>22:00</span><span>02:00</span><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span></div>
+    <!-- 我的持仓 -->
+    <div class="subpane" id="sub-holdings">
+      <div class="card" id="holdBox" style="padding:16px"></div>
     </div>
 
-    <div class="h3">Top 5 pools</div>
-    <div class="card" style="padding:4px 16px">
-      <div class="pool" onclick="poolDetail('PancakeSwap V3')">
-        <div class="pl">🥞</div>
-        <div class="pi"><div class="pn">PancakeSwap V3</div><div class="pp">LUSD | USDT</div></div>
-        <div class="pv">$4.82M ›</div>
+    <!-- 持币地址 -->
+    <div class="subpane" id="sub-holders" style="display:none">
+      <div class="h3" style="margin-top:4px">Change in holders</div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">All holders</div>
+        <svg viewBox="0 0 340 110" width="100%" height="auto">
+          <line x1="0" y1="20" x2="340" y2="20" stroke="#17191d"/>
+          <line x1="0" y1="50" x2="340" y2="50" stroke="#17191d"/>
+          <line x1="0" y1="80" x2="340" y2="80" stroke="#17191d"/>
+          <path d="M0 55 L340 52" fill="none" stroke="#b7ff1a" stroke-width="2"/>
+        </svg>
+        <div class="axisx"><span>10/26</span><span>10/27</span><span>10/27</span><span>10/28</span><span>10/28</span></div>
       </div>
-      <div class="pool" onclick="poolDetail('Uniswap V3')">
-        <div class="pl blue">🦄</div>
-        <div class="pi"><div class="pn">Uniswap V3</div><div class="pp">LUSD | USDC</div></div>
-        <div class="pv">$3.10M ›</div>
+    </div>
+
+    <!-- 交易活动 -->
+    <div class="subpane" id="sub-activity" style="display:none">
+      <div class="txhead"><span>Type / Time</span><span>Amount / Value</span><span>Address</span></div>
+      <div class="card" style="padding:2px 14px" id="txList"></div>
+      <div style="text-align:center;font-size:10.5px;color:var(--dim);padding:14px 0 4px">
+        仅展示最近 10 笔 · 数据为模拟
       </div>
-      <div class="pool" onclick="poolDetail('BaseSwap')">
-        <div class="pl green">◈</div>
-        <div class="pi"><div class="pn">BaseSwap</div><div class="pp">LUSD | WETH</div></div>
-        <div class="pv dim">-- ›</div>
+    </div>
+
+    <!-- 流动性 -->
+    <div class="subpane" id="sub-liquidity" style="display:none">
+      <div class="card link" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between"
+           onclick="detail('Total liquidity')">
+        <span style="font-size:12px;color:var(--muted)">Total liquidity</span>
+        <span style="font-size:13.5px;font-weight:700">$17.11M <span style="color:var(--dim)">›</span></span>
+      </div>
+
+      <div class="chiprow" id="liqFilter" style="margin-top:14px">
+        <button class="chipx on" onclick="setLiqFilter(this,'all')">All</button>
+        <button class="chipx" onclick="setLiqFilter(this,'add')">Add</button>
+        <button class="chipx" onclick="setLiqFilter(this,'rem')">Remove</button>
+      </div>
+
+      <div class="card" style="padding:2px 14px;margin-top:12px" id="liqList"></div>
+
+      <div class="h3">Total liquidity · 24h</div>
+      <div class="tfrow" id="tfData" style="margin-bottom:6px">
+        <button onclick="setDataTf(this)">4h</button>
+        <button class="on" onclick="setDataTf(this)">24h</button>
+        <button onclick="setDataTf(this)">7D</button>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div class="barchart" id="liqBars"></div>
+        <div class="axisx"><span>22:00</span><span>02:00</span><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span></div>
+      </div>
+
+      <div class="h3">Top 5 pools</div>
+      <div class="card" style="padding:4px 16px">
+        <div class="pool" onclick="poolDetail('PancakeSwap V3')">
+          <div class="pl">P</div>
+          <div class="pi"><div class="pn">PancakeSwap V3</div><div class="pp">LUSD | USDT</div></div>
+          <div class="pv">$4.82M ›</div>
+        </div>
+        <div class="pool" onclick="poolDetail('Uniswap V3')">
+          <div class="pl blue">U</div>
+          <div class="pi"><div class="pn">Uniswap V3</div><div class="pp">LUSD | USDC</div></div>
+          <div class="pv">$3.10M ›</div>
+        </div>
+        <div class="pool" onclick="poolDetail('BaseSwap')">
+          <div class="pl green">B</div>
+          <div class="pi"><div class="pn">BaseSwap</div><div class="pp">LUSD | WETH</div></div>
+          <div class="pv dim">-- ›</div>
+        </div>
       </div>
     </div>
   </section>
@@ -862,6 +966,7 @@ function updateConnectBtn(){
   const b=$('connectBtn');
   if(connectedAddr){ b.textContent=short(connectedAddr); b.classList.add('connected'); b.title=connectedAddr; }
   else { b.textContent='连接'; b.classList.remove('connected'); b.title=''; }
+  try{ if(typeof renderHoldings==='function' && $('holdBox')) renderHoldings(); }catch(_){}
 }
 function bindProvider(w){
   if(!w||!w.provider||!w.provider.on) return;
@@ -1125,7 +1230,110 @@ function goTab(name){
   if(b) b.click();
 }
 
+/* ============ 数据页子导航 ============ */
+function switchSub(name){
+  document.querySelectorAll('#subnav button').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('onclick').indexOf("'"+name+"'")>-1);
+  });
+  document.querySelectorAll('.subpane').forEach(p=>{ p.style.display='none'; });
+  const pane=$('sub-'+name); if(pane) pane.style.display='block';
+  if(name==='holdings') renderHoldings();
+  if(name==='activity') renderTx();
+  if(name==='liquidity'){ renderLiq(); drawLiqBars(); }
+}
+
+/* ---- 我的持仓 ---- */
+function renderHoldings(){
+  const box=$('holdBox'); if(!box) return;
+  if(!connectedAddr){
+    box.innerHTML='<div class="hold-empty">'
+      +'<div class="he-t">No wallet connected</div>'
+      +'<div class="he-s">连接钱包后，这里显示你的 LUSD 余额、赠券与持仓占比。</div>'
+      +'<button class="he-b" onclick="connectWallet()">Connect wallet</button>'
+      +'</div>';
+    return;
+  }
+  box.innerHTML='<div class="hold-top"><span>'+short(connectedAddr)+'</span><span>'
+    +(readOnly?'Read-only':(activeWallet?activeWallet.name:'Connected'))+'</span></div>'
+    +'<div class="hold-bal" id="holdBal">—<small>LUSD</small></div>'
+    +'<div class="hold-sub">Total balance</div>'
+    +'<div style="margin-top:16px">'
+    +'<div class="hold-row"><span>Wallet</span><span class="mono" style="font-size:11px">'+short(connectedAddr)+'</span></div>'
+    +'<div class="hold-row"><span>Network</span><span>'+(CHAINS[(chainId||'').toLowerCase()]||'—')+'</span></div>'
+    +'<div class="hold-row"><span>Voucher (LVCH)</span><span id="holdVch">—</span></div>'
+    +'</div>';
+  loadHoldings();
+}
+async function loadHoldings(){
+  if(!connectedAddr||readOnly||!activeWallet) return;
+  try{
+    const data='0x70a08231'+connectedAddr.slice(2).toLowerCase().padStart(64,'0');
+    const r=await activeWallet.provider.request({method:'eth_call',params:[{to:ADDR,data},'latest']});
+    const v=Number(BigInt(r||'0x0'))/1e6;
+    const el=$('holdBal');
+    if(el) el.innerHTML=v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'<small>LUSD</small>';
+  }catch(_){}
+}
+
+/* ---- 交易活动 ---- */
+const TXS=[
+ {t:'s',amt:'-1,240.50',time:'11:57:12',qty:'1,240.50',val:'$1,240.50',addr:'0x1f3a…9c2d'},
+ {t:'b',amt:'+860.00',  time:'11:56:40',qty:'860.00',  val:'$860.00',  addr:'0x7c2b…4e81'},
+ {t:'s',amt:'-12,400.00',time:'11:52:03',qty:'12,400.00',val:'$12,400.00',addr:'0x9d4e…1b07'},
+ {t:'b',amt:'+3,150.25',time:'11:48:55',qty:'3,150.25',val:'$3,150.25',addr:'0x2a8f…7c33'},
+ {t:'s',amt:'-540.00',  time:'11:41:18',qty:'540.00',  val:'$540.00',  addr:'0x5e91…8d2a'},
+ {t:'b',amt:'+25,000.00',time:'11:33:06',qty:'25,000.00',val:'$25,000.00',addr:'0xb6c3…0f9e'},
+ {t:'s',amt:'-2,780.40',time:'11:20:44',qty:'2,780.40',val:'$2,780.40',addr:'0x1f3a…9c2d'},
+ {t:'b',amt:'+1,020.00',time:'11:05:31',qty:'1,020.00',val:'$1,020.00',addr:'0x4d7a…6b15'},
+ {t:'s',amt:'-8,900.00',time:'10:52:19',qty:'8,900.00',val:'$8,900.00',addr:'0x7c2b…4e81'},
+ {t:'b',amt:'+460.75',  time:'10:38:02',qty:'460.75',  val:'$460.75',  addr:'0xe3f8…2c46'}
+];
+function renderTx(){
+  const box=$('txList'); if(!box) return;
+  box.innerHTML=TXS.map((x,i)=>
+    '<div class="txrow" onclick="txDetail('+i+')">'
+    +'<div class="tx-l"><div class="tx-type '+x.t+'">'+(x.t==='s'?'SELL':'BUY')+'<span>'+x.amt+'</span></div>'
+    +'<div class="tx-time">'+x.time+'</div></div>'
+    +'<div class="tx-m"><div class="tx-total">'+x.qty+' LUSD</div>'
+    +'<div class="tx-price">'+x.val+' · @ $1.0000</div></div>'
+    +'<div class="tx-a">'+x.addr+'</div>'
+    +'</div>').join('');
+}
+function txDetail(i){
+  const x=TXS[i]; if(!x) return;
+  toast((x.t==='s'?'卖出 ':'买入 ')+x.qty+' LUSD · '+x.time);
+}
+
+/* ---- 流动性 ---- */
+const LIQ=[
+ {t:'add',d:'10/28 09:14',a1:'+12,400.00 LUSD',a2:'+12,400.00 USDC',v:'$12,400.00'},
+ {t:'add',d:'10/27 18:02',a1:'+8,600.00 LUSD', a2:'+8,600.00 USDC', v:'$8,600.00'},
+ {t:'rem',d:'10/26 14:37',a1:'-3,200.00 LUSD', a2:'-3,200.00 USDC', v:'$3,200.00'},
+ {t:'add',d:'10/25 11:20',a1:'+5,400.00 LUSD', a2:'+5,400.00 USDC', v:'$5,400.00'}
+];
+let liqFilter='all';
+function setLiqFilter(el,mode){
+  liqFilter=mode;
+  document.querySelectorAll('#liqFilter .chipx').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderLiq();
+}
+function renderLiq(){
+  const box=$('liqList'); if(!box) return;
+  const rows=LIQ.filter(x=>liqFilter==='all'||x.t===liqFilter);
+  if(!rows.length){ box.innerHTML='<div style="padding:24px 0;text-align:center;font-size:12px;color:var(--dim)">暂无记录</div>'; return; }
+  box.innerHTML=rows.map(x=>
+    '<div class="lqrow">'
+    +'<div class="lq-ic '+(x.t==='add'?'add':'rem')+'">'+(x.t==='add'?'+':'−')+'</div>'
+    +'<div class="lq-i"><b>'+(x.t==='add'?'Add':'Remove')+'</b><span>'+x.d+'</span></div>'
+    +'<div class="lq-q"><em class="'+(x.t==='add'?'p':'n')+'">'+x.a1+'</em>'
+    +'<em class="'+(x.t==='add'?'p':'n')+'">'+x.a2+'</em></div>'
+    +'<div class="lq-v">'+x.v+'</div>'
+    +'</div>').join('');
+}
+
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
+renderHoldings(); renderTx(); renderLiq();
 </script>
 </body>
 </html>
