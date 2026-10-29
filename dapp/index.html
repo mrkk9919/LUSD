@@ -328,6 +328,9 @@
     font-size:11.5px;color:#d8b073;line-height:1.5}
   .p2p-lock b{color:#ffb020}
   .p2p-lock svg{width:14px;height:14px;flex:none;stroke:#ffb020;fill:none;stroke-width:1.8}
+  .p2p-lock.ok{background:rgba(183,255,26,.09);border-color:rgba(183,255,26,.30);color:#cfe9a8}
+  .p2p-lock.ok svg{stroke:var(--green)}
+  .p2p-lock.ok b{color:var(--green)}
   .p2p-seg{display:flex;gap:6px;background:#14161a;border:1px solid var(--line);border-radius:11px;padding:3px}
   .p2p-seg button{flex:1;background:none;border:0;font-family:inherit;font-size:12.5px;font-weight:700;
     color:var(--muted);padding:9px 0;border-radius:9px;cursor:pointer;transition:.15s}
@@ -614,7 +617,7 @@
   <!-- 发行公告 -->
   <div class="ann" id="ann">
     <span class="ad"></span>
-    <p><b>新币发行中</b> · P2P 交易功能将在 14 小时后开放</p>
+    <p><b>新币发行中</b> · 绑定收款账号后即可 P2P 兑换</p>
     <button class="ax" onclick="this.parentNode.style.display='none'" aria-label="关闭">×</button>
   </div>
 
@@ -683,8 +686,8 @@
     </div>
 
     <div class="chips">
-      <span class="chipx"><span class="feeslbl">ⓘ Fees</span> <b>0.30%</b></span>
-      <span class="chipx">Buy/Sell tax <b>0.3% / 0.3%</b></span>
+      <span class="chipx"><span class="feeslbl">ⓘ Fees</span> <b>0%</b></span>
+      <span class="chipx">Buy/Sell tax <b>0% / 0%</b></span>
       <span class="chipx" style="color:var(--green);border-color:rgba(183,255,26,.35)">● 1:1 锚定 USD</span>
     </div>
 
@@ -763,7 +766,7 @@
         <div class="kv link" onclick="detail('Holders')"><span class="k">Holders</span><span class="v">3,392 ›</span></div>
         <div class="kv"><span class="k">FDV</span><span class="v">$12.48M</span></div>
         <div class="kv"><span class="k">Market cap</span><span class="v">$12.48M</span></div>
-        <div class="kv link" onclick="detail('Buy / Sell tax')"><span class="k">Buy / Sell tax</span><span class="v">0.3% / 0.3% ›</span></div>
+        <div class="kv link" onclick="detail('Buy / Sell tax')"><span class="k">Buy / Sell tax</span><span class="v">0% / 0% ›</span></div>
         <div class="kv link" onclick="goTab('risk')"><span class="k">Risk</span><span class="v" style="color:#ffb020">⚠ 1 ›</span></div>
         <div class="kv"><span class="k">Circulating supply</span><span class="v">12.48M</span></div>
         <div class="kv"><span class="k">Maximum supply</span><span class="v">∞</span></div>
@@ -949,7 +952,7 @@
       <div class="fbody">
         <div class="fhead"><span class="fname">LUSD Official</span><span class="fdate">09/26/2026</span><span class="fmore" onclick="toast('更多操作')">⋯</span></div>
         <div class="ftext">新增 PancakeSwap V3 流动性池（LUSD / USDT），提升二级市场深度。</div>
-        <div class="flist">新增池子 LUSD/USDT<br>初始深度 $4.82M<br>手续费 0.30% <span class="more">More</span></div>
+        <div class="flist">新增池子 LUSD/USDT<br>初始深度 $4.82M<br>手续费 0% <span class="more">More</span></div>
         <div class="ffoot"><span onclick="toast('46 次引用')">▥ 46</span><span onclick="toggleLike(this)">♡</span></div>
       </div>
     </div>
@@ -957,9 +960,9 @@
 
   <!-- P2P -->
   <section class="tabpane" id="tab-p2p">
-    <div class="p2p-lock">
+    <div class="p2p-lock" id="p2pLock">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg>
-      <span>P2P opens in <b>14h</b> · 可浏览商家与报价，暂不可下单</span>
+      <span id="p2pLockTxt">绑定越南银行账号后即可下单兑换</span>
     </div>
 
     <div class="ob-switch" id="p2pView">
@@ -1154,7 +1157,7 @@ const I18N = {
   en: {
  "发行公告": "Announcement",
  "新币发行中": "Token launch",
- "· P2P 交易功能将在 14 小时后开放": "· P2P trading opens in 14 hours",
+ "· 绑定收款账号后即可 P2P 兑换": "· Bind a payout account to start P2P trading",
  "合约": "Contract",
  "连接": "Connect",
  "⧉ 复制合约地址": "⧉ Copy contract address",
@@ -1177,10 +1180,12 @@ const I18N = {
  "新增 PancakeSwap V3 流动性池（LUSD / USDT），提升二级市场深度。": "Added a PancakeSwap V3 liquidity pool (LUSD / USDT), improving secondary market depth.",
  "新增池子 LUSD/USDT": "New pool LUSD/USDT",
  "初始深度 $4.82M": "Initial depth $4.82M",
- "手续费 0.30%": "Fee 0.30%",
- "· 可浏览商家与报价，暂不可下单": "· Browse merchants and quotes; ordering is not open yet",
+ "手续费 0%": "Fee 0%",
+ "绑定越南银行账号后即可下单兑换": "Bind a Vietnamese bank account to start trading",
  "收款账号": "Payout account",
  "未绑定": "Not linked",
+ "已绑定 · 可下单兑换 LUSD": "Linked · you can trade LUSD now",
+ "请先绑定越南银行账号": "Link a Vietnamese bank account first",
  "绑定越南银行账号": "Link a Vietnamese bank account",
  "20 家越南银行 · 用于 P2P 收款": "20 Vietnamese banks · For P2P payouts",
  "P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。": "P2P trades settle directly between users. The platform provides matching and escrow and does not set prices. All merchants have completed KYC. Funds are held in escrow after an order is placed and released once payment is confirmed. Disputes can be submitted for support arbitration.",
@@ -1247,13 +1252,13 @@ const I18N = {
  "已复制账号": "Copied account",
  "已绑定": "Linked",
  "已解绑": "Unlinked",
- "P2P 将于 14 小时后开放 · ": "P2P opens in 14 hours · ",
+ "下单成功 · ": "Order placed · ",
  "更多操作": "More actions",
  "更多设置": "More settings",
  "P2P 收款账号": "P2P payout account",
  "添加账号": "Add account",
  "点击管理": "tap to manage",
- "，可用于 P2P 收款": ", ready for P2P payouts",
+ "，现在可以下单兑换": ", you can trade now",
  "商家": "merchants",
  "按价格排序": "price sorted",
  "orders": "orders",
@@ -1290,7 +1295,7 @@ const I18N = {
   vi: {
  "发行公告": "Thông báo",
  "新币发行中": "Đang phát hành token",
- "· P2P 交易功能将在 14 小时后开放": "· Tính năng P2P sẽ mở sau 14 giờ",
+ "· 绑定收款账号后即可 P2P 兑换": "· Liên kết tài khoản nhận tiền để giao dịch P2P",
  "合约": "Hợp đồng",
  "连接": "Kết nối",
  "⧉ 复制合约地址": "⧉ Sao chép địa chỉ hợp đồng",
@@ -1313,10 +1318,12 @@ const I18N = {
  "新增 PancakeSwap V3 流动性池（LUSD / USDT），提升二级市场深度。": "Đã thêm pool thanh khoản PancakeSwap V3 (LUSD / USDT), tăng độ sâu thị trường thứ cấp.",
  "新增池子 LUSD/USDT": "Pool mới LUSD/USDT",
  "初始深度 $4.82M": "Độ sâu ban đầu $4,82M",
- "手续费 0.30%": "Phí 0,30%",
- "· 可浏览商家与报价，暂不可下单": "· Xem được người bán và báo giá, chưa thể đặt lệnh",
+ "手续费 0%": "Phí 0%",
+ "绑定越南银行账号后即可下单兑换": "Liên kết tài khoản ngân hàng Việt Nam để bắt đầu giao dịch",
  "收款账号": "Tài khoản nhận tiền",
  "未绑定": "Chưa liên kết",
+ "已绑定 · 可下单兑换 LUSD": "Đã liên kết · có thể giao dịch LUSD",
+ "请先绑定越南银行账号": "Vui lòng liên kết tài khoản ngân hàng Việt Nam trước",
  "绑定越南银行账号": "Liên kết tài khoản ngân hàng VN",
  "20 家越南银行 · 用于 P2P 收款": "20 ngân hàng Việt Nam · Nhận tiền P2P",
  "P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。": "Giao dịch P2P diễn ra trực tiếp giữa người dùng; nền tảng chỉ khớp lệnh và bảo lãnh, không tham gia định giá. Tất cả người bán đã hoàn thành KYC. Sau khi đặt lệnh, tài sản được nền tảng giữ hộ và giải phóng khi xác nhận đã nhận tiền. Nếu có tranh chấp, có thể gửi yêu cầu trọng tài.",
@@ -1383,13 +1390,13 @@ const I18N = {
  "已复制账号": "Đã sao chép tài khoản",
  "已绑定": "Đã liên kết",
  "已解绑": "Đã huỷ liên kết",
- "P2P 将于 14 小时后开放 · ": "P2P mở sau 14 giờ · ",
+ "下单成功 · ": "Đặt lệnh thành công · ",
  "更多操作": "Thao tác khác",
  "更多设置": "Cài đặt khác",
  "P2P 收款账号": "Tài khoản nhận tiền P2P",
  "添加账号": "Thêm tài khoản",
  "点击管理": "nhấn để quản lý",
- "，可用于 P2P 收款": ", dùng để nhận tiền P2P",
+ "，现在可以下单兑换": ", bạn có thể giao dịch ngay",
  "商家": "người bán",
  "按价格排序": "sắp theo giá",
  "orders": "đơn",
@@ -1771,6 +1778,10 @@ async function doTrade(){
   const v=parseFloat($('amount').value)||0;
   if(v<=0){ toast('请输入数量',true); return; }
   if(state.frozen){ toast('账户已冻结，无法交易',true); return; }
+  if(!ACCTS.length){
+    toast(T('请先绑定越南银行账号'),true);
+    closeSheet(); setTimeout(openAcctSheet,180); return;
+  }
   if(!await tradeGate()) return;
   if(state.mode==='buy'){
     if(v>state.usdc){ toast('USDC 余额不足',true); return; }
@@ -1923,7 +1934,7 @@ async function loadWalletInfo(){
   try{
     const data='0x70a08231'+connectedAddr.slice(2).toLowerCase().padStart(64,'0');
     const r=await p.request({method:'eth_call',params:[{to:ADDR,data},'latest']});
-    const v=Number(BigInt(r||'0x0'))/1e18;
+    const v=Number(BigInt(r||'0x0'))/1e6;  /* LUSD decimals = 6 */
     $('wLusd').textContent=v.toFixed(2);
     if(!balSynced) state.lusd=v;
   }catch(_){}
@@ -1931,7 +1942,7 @@ async function loadWalletInfo(){
     try{
       const data='0x70a08231'+connectedAddr.slice(2).toLowerCase().padStart(64,'0');
       const r=await p.request({method:'eth_call',params:[{to:USDC_ADDR,data},'latest']});
-      state.usdc=Number(BigInt(r||'0x0'))/1e18;
+      state.usdc=Number(BigInt(r||'0x0'))/1e6;  /* USDC decimals = 6 */
     }catch(_){}
     balSynced=true;
     try{ setMode(state.mode); }catch(_){}
@@ -2341,7 +2352,7 @@ function p2pOrder(i){
   const a=ACCTS[paySel];
   if(!ACCTS.length){ toast('请先绑定银行收款账号',true); openAcctSheet(); return; }
   if(!a){ toast('请先选择收款账号',true); return; }
-  toast(T('P2P 将于 14 小时后开放 · ')+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
+  toast(T('下单成功 · ')+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
 }
 
 /* ---- 链上订单流（P2P · on-chain order book） ---- */
@@ -2542,6 +2553,13 @@ function renderPay(){
      : ACCTS.length+' tài khoản')
     : T('未绑定');
 
+  const lock=$('p2pLock'), lockTxt=$('p2pLockTxt');
+  if(lock&&lockTxt){
+    lock.classList.toggle('ok', has);
+    lockTxt.textContent = has ? T('已绑定 · 可下单兑换 LUSD')
+                              : T('绑定越南银行账号后即可下单兑换');
+  }
+
   const ic=$('infoCardStat');
   if(ic){
     var a=ACCTS[paySel]||ACCTS[0];
@@ -2608,7 +2626,7 @@ function saveAcct(){
   saveAccts(); renderAcctList(); renderPay();
   $('acctNo').value=''; $('acctName').value='';
   closeAcctSheet();
-  toast(T('已绑定')+' '+code+' '+maskAcct(no)+T('，可用于 P2P 收款'));
+  toast(T('已绑定')+' '+code+' '+maskAcct(no)+T('，现在可以下单兑换'));
 }
 
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
