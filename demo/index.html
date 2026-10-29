@@ -84,8 +84,8 @@
   .tabs{display:flex;gap:4px;padding:0 8px;border-bottom:1px solid var(--line);position:sticky;top:58px;
     background:var(--bg);z-index:19;overflow-x:auto;scrollbar-width:none}
   .tabs::-webkit-scrollbar{display:none}
-  .tabs button{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
-    padding:12px 12px;cursor:pointer;position:relative;white-space:nowrap;font-family:inherit}
+  .tabs button{background:none;border:none;color:var(--muted);font-size:13.5px;font-weight:600;
+    padding:12px 10px;cursor:pointer;position:relative;white-space:nowrap;font-family:inherit}
   .tabs button.on{color:var(--text)}
   .tabs button.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;background:var(--text);border-radius:2px}
 
@@ -269,6 +269,48 @@
   .hold-row:last-child{border-bottom:0}
   .hold-row span:last-child{font-weight:600}
 
+  /* P2P */
+  .p2p-lock{display:flex;align-items:center;gap:8px;background:rgba(255,176,32,.10);
+    border:1px solid rgba(255,176,32,.28);border-radius:10px;padding:9px 12px;margin:2px 0 12px;
+    font-size:11.5px;color:#d8b073;line-height:1.5}
+  .p2p-lock b{color:#ffb020}
+  .p2p-lock svg{width:14px;height:14px;flex:none;stroke:#ffb020;fill:none;stroke-width:1.8}
+  .p2p-seg{display:flex;gap:6px;background:#14161a;border:1px solid var(--line);border-radius:11px;padding:3px}
+  .p2p-seg button{flex:1;background:none;border:0;font-family:inherit;font-size:12.5px;font-weight:700;
+    color:var(--muted);padding:9px 0;border-radius:9px;cursor:pointer;transition:.15s}
+  .p2p-seg button.on{background:#22262d}
+  .p2p-seg button.on[data-m="buy"]{color:var(--green)}
+  .p2p-seg button.on[data-m="sell"]{color:var(--pink)}
+  .p2p-lbl{font-size:11px;color:var(--dim)}
+  .p2p-input{display:flex;align-items:center;gap:8px;margin-top:7px}
+  .p2p-input .cur{font-size:19px;font-weight:700;color:var(--muted)}
+  .p2p-input input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);
+    font-size:23px;font-weight:700;font-family:inherit;letter-spacing:-.5px;padding:0}
+  .p2p-input .unit{font-size:11px;color:var(--muted);background:#1a1d23;border-radius:6px;padding:4px 8px;flex:none}
+  .p2p-get{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+    padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+  .p2p-get b{font-size:14px;color:var(--text)}
+  .p2p-methods{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+  .p2p-row{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid #17191d}
+  .p2p-row:last-child{border-bottom:0}
+  .p2p-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2b3a52,#1b2434);
+    display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;
+    color:#9db0cb;flex:none}
+  .p2p-i{flex:1;min-width:0}
+  .p2p-n{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:4px}
+  .p2p-n .vf{color:var(--green);font-size:9px;border:1px solid rgba(183,255,26,.4);
+    border-radius:3px;padding:0 3px;line-height:1.4}
+  .p2p-m{font-size:10.5px;color:var(--dim);margin-top:2px}
+  .p2p-pay{font-size:9.5px;color:var(--muted);margin-top:4px;background:#1a1d23;border-radius:4px;
+    padding:1px 6px;display:inline-block}
+  .p2p-r{text-align:right;flex:none;width:92px}
+  .p2p-price{font-size:13.5px;font-weight:700}
+  .p2p-lim{font-size:9.5px;color:var(--dim);margin-top:2px}
+  .p2p-btn{margin-top:7px;width:100%;border:0;border-radius:7px;padding:6px 0;font-size:11.5px;
+    font-weight:700;font-family:inherit;cursor:pointer;background:var(--green);color:#0a0b0d}
+  .p2p-btn.sell{background:var(--pink);color:#fff}
+  .p2p-note{font-size:10.5px;color:var(--dim);line-height:1.65;padding:14px 2px 4px}
+
   /* risk */
   .disclaimer{font-size:13px;color:var(--muted);line-height:1.65;margin:2px 0 18px}
   .riskstats{display:flex;gap:14px;margin-bottom:24px}
@@ -416,6 +458,7 @@
     <button data-tab="data">Data</button>
     <button data-tab="risk">Risk</button>
     <button data-tab="feeds">Feeds</button>
+    <button data-tab="p2p">P2P</button>
   </nav>
 
   <!-- Charts -->
@@ -690,6 +733,46 @@
         <div class="flist">新增池子 LUSD/USDT<br>初始深度 $4.82M<br>手续费 0.30% <span class="more">More</span></div>
         <div class="ffoot"><span onclick="toast('46 次引用')">▥ 46</span><span onclick="toggleLike(this)">♡</span></div>
       </div>
+    </div>
+  </section>
+
+  <!-- P2P -->
+  <section class="tabpane" id="tab-p2p">
+    <div class="p2p-lock">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg>
+      <span>P2P opens in <b>14h</b> · 可浏览商家与报价，暂不可下单</span>
+    </div>
+
+    <div class="p2p-seg" id="p2pSeg">
+      <button class="on" data-m="buy" onclick="setP2P('buy')">Buy LUSD</button>
+      <button data-m="sell" onclick="setP2P('sell')">Sell LUSD</button>
+    </div>
+
+    <div class="card" style="padding:14px 16px;margin-top:12px">
+      <div class="p2p-lbl" id="p2pLbl">I want to pay</div>
+      <div class="p2p-input">
+        <span class="cur" id="p2pCur">$</span>
+        <input id="p2pAmt" value="500" inputmode="decimal" oninput="calcP2P()">
+        <span class="unit" id="p2pUnit">USD</span>
+      </div>
+      <div class="p2p-get">
+        <span id="p2pGetLbl">You receive</span>
+        <b id="p2pGet">499.00 LUSD</b>
+      </div>
+    </div>
+
+    <div class="p2p-methods">
+      <span class="chipx on" onclick="pickPay(this)">Bank transfer</span>
+      <span class="chipx" onclick="pickPay(this)">Wise</span>
+      <span class="chipx" onclick="pickPay(this)">Alipay</span>
+    </div>
+
+    <div class="h3">Verified merchants</div>
+    <div class="card" style="padding:2px 14px" id="p2pList"></div>
+
+    <div class="p2p-note">
+      P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，
+      下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。
     </div>
   </section>
 
@@ -1332,8 +1415,75 @@ function renderLiq(){
     +'</div>').join('');
 }
 
+/* ============ P2P ============ */
+const P2P = {
+  buy:[
+    {n:'LUSD Market',  v:true, orders:1284, rate:'99.2%', price:1.0020, min:50,  max:2000, pay:'Bank transfer'},
+    {n:'Global Exchange', v:true, orders:862, rate:'98.7%', price:1.0035, min:100, max:5000, pay:'Wise'},
+    {n:'SunPay',       v:false,orders:214,  rate:'96.1%', price:1.0050, min:20,  max:800,  pay:'Alipay'}
+  ],
+  sell:[
+    {n:'BlueOcean',    v:true, orders:1043, rate:'99.5%', price:0.9980, min:50,  max:3000, pay:'Bank transfer'},
+    {n:'TradeHub',     v:true, orders:530,  rate:'97.8%', price:0.9970, min:100, max:4000, pay:'Wise'},
+    {n:'QuickSwap',    v:false,orders:88,   rate:'94.2%', price:0.9960, min:20,  max:500,  pay:'Alipay'}
+  ]
+};
+let p2pMode='buy';
+
+function setP2P(mode){
+  p2pMode=mode;
+  document.querySelectorAll('#p2pSeg button').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-m')===mode);
+  });
+  $('p2pLbl').textContent = mode==='buy' ? 'I want to pay' : 'I want to sell';
+  $('p2pCur').textContent = mode==='buy' ? '$' : '';
+  $('p2pUnit').textContent = mode==='buy' ? 'USD' : 'LUSD';
+  $('p2pAmt').value = mode==='buy' ? '500' : '500';
+  renderP2P(); calcP2P();
+}
+
+function renderP2P(){
+  const list=$('p2pList'); if(!list) return;
+  const rows=P2P[p2pMode]||[];
+  list.innerHTML=rows.map((o,i)=>
+    '<div class="p2p-row">'
+    +'<div class="p2p-av">'+o.n.charAt(0)+'</div>'
+    +'<div class="p2p-i">'
+      +'<div class="p2p-n">'+o.n+(o.v?'<span class="vf">KYC</span>':'')+'</div>'
+      +'<div class="p2p-m">'+o.orders+' orders · '+o.rate+'</div>'
+      +'<div class="p2p-pay">'+o.pay+'</div>'
+    +'</div>'
+    +'<div class="p2p-r">'
+      +'<div class="p2p-price">'+o.price.toFixed(4)+'</div>'
+      +'<div class="p2p-lim">$'+o.min+' – $'+o.max+'</div>'
+      +'<button class="p2p-btn'+(p2pMode==='sell'?' sell':'')+'" onclick="p2pOrder('+i+')">'
+        +(p2pMode==='buy'?'Buy':'Sell')+'</button>'
+    +'</div>'
+    +'</div>').join('');
+}
+
+function calcP2P(){
+  const el=$('p2pAmt'); if(!el) return;
+  const amt=parseFloat(el.value.replace(/,/g,''))||0;
+  const best=(P2P[p2pMode][0]||{}).price||1;
+  const out = p2pMode==='buy' ? amt/best : amt*best;
+  const unit = p2pMode==='buy' ? 'LUSD' : 'USD';
+  const pre  = p2pMode==='buy' ? '' : '$';
+  $('p2pGet').textContent = pre + out.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ' + unit;
+}
+
+function p2pOrder(i){
+  const o=P2P[p2pMode][i];
+  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4));
+}
+
+function pickPay(el){
+  document.querySelectorAll('.p2p-methods .chipx').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
-renderHoldings(); renderTx(); renderLiq();
+renderHoldings(); renderTx(); renderLiq(); renderP2P(); calcP2P();
 </script>
 </body>
 </html>
