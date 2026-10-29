@@ -356,6 +356,9 @@
   .citem .cn{font-size:12.5px;font-weight:600}
   .citem .cm{font-size:10.5px;color:var(--dim);margin-top:2px}
   .citem .cd{color:var(--pink);font-size:17px;cursor:pointer;padding:0 4px;line-height:1}
+  .citem .cm .mono{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#aab0ba;word-break:break-all}
+  .citem .cmini{cursor:pointer;color:var(--muted);margin-left:5px;font-size:11px}
+  .citem .cm{line-height:1.55}
   .cf{margin-bottom:12px}
   .cfl{font-size:10.5px;color:var(--dim);margin-bottom:6px}
   .cf input,.cf select{width:100%;background:#14161a;border:1px solid var(--line);border-radius:9px;
@@ -653,11 +656,11 @@
 
       <div class="h3" style="margin-top:16px">支付方式</div>
       <div class="card" style="padding:0 14px">
-        <div class="setrow" onclick="openCardSheet()">
-          <span class="sr-ic">卡</span>
+        <div class="setrow" onclick="openAcctSheet()">
+          <span class="sr-ic">账</span>
           <div class="sr-i">
-            <b>越南银行卡</b>
-            <span id="infoCardStat">未绑定 · 点击添加，用于 P2P 付款</span>
+            <b>越南银行账号</b>
+            <span id="infoCardStat">未绑定 · 点击添加，用于 P2P 收款</span>
           </div>
           <span class="sr-ar">›</span>
         </div>
@@ -835,15 +838,15 @@
 
     <div class="paybox empty" id="payBox">
       <div class="pb-head">
-        <span class="pb-t">支付方式<i>银行卡</i></span>
+        <span class="pb-t">支付方式<i>收款账号</i></span>
         <span class="pb-sub" id="payStat">未绑定</span>
       </div>
       <div class="p2p-methods" id="payMethods"></div>
-      <div class="pb-empty" id="payEmpty" onclick="openCardSheet()">
+      <div class="pb-empty" id="payEmpty" onclick="openAcctSheet()">
         <span class="pb-plus">+</span>
         <div class="pb-ei">
-          <b>绑定越南银行卡</b>
-          <span>20 家越南银行 · 仅保存后四位</span>
+          <b>绑定越南银行账号</b>
+          <span>20 家越南银行 · 用于 P2P 收款</span>
         </div>
         <span class="pb-arrow">›</span>
       </div>
@@ -870,30 +873,24 @@
 </div>
 
 <!-- trade sheet -->
-<div class="sheet" id="cardSheet">
+<div class="sheet" id="acctSheet">
   <div class="sheetbox">
-    <div class="sheet-h"><span class="t">支付方式 · 银行卡</span><span class="x" onclick="closeCardSheet()">×</span></div>
-    <div class="cardlist" id="cardList"></div>
+    <div class="sheet-h"><span class="t">P2P 收款账号</span><span class="x" onclick="closeAcctSheet()">×</span></div>
+    <div class="cardlist" id="acctList"></div>
     <div class="cf">
       <div class="cfl">开户银行</div>
-      <select id="cardBank"></select>
+      <select id="acctBank"></select>
     </div>
     <div class="cf">
-      <div class="cfl">卡号</div>
-      <input id="cardNo" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000" oninput="fmtCard(this)">
+      <div class="cfl">银行账号</div>
+      <input id="acctNo" inputmode="numeric" autocomplete="off" placeholder="例如 0071000123456" oninput="fmtAcct(this)">
     </div>
-    <div class="cf-row">
-      <div class="cf" style="flex:1">
-        <div class="cfl">持卡人姓名</div>
-        <input id="cardName" autocomplete="off" placeholder="NGUYEN VAN A">
-      </div>
-      <div class="cf" style="width:104px;flex:none">
-        <div class="cfl">有效期</div>
-        <input id="cardExp" inputmode="numeric" autocomplete="off" placeholder="MM/YY" oninput="fmtExp(this)">
-      </div>
+    <div class="cf">
+      <div class="cfl">开户人姓名（与银行一致）</div>
+      <input id="acctName" autocomplete="off" placeholder="NGUYEN VAN A">
     </div>
-    <button class="p2p-save" onclick="saveCard()">确认绑定</button>
-    <p class="cs-note">演示环境：卡号仅保留后四位用于展示，完整号码不会保存或上传。</p>
+    <button class="p2p-save" onclick="saveAcct()">确认绑定</button>
+    <p class="cs-note">账号用于接收 P2P 转账，请确保与银行预留信息一致；姓名不符会导致付款失败。演示环境仅保存在本机浏览器。</p>
   </div>
 </div>
 
@@ -1617,12 +1614,13 @@ function calcP2P(){
 
 function p2pOrder(i){
   const o=P2P[p2pMode][i];
-  const c=CARDS[paySel];
-  if(CARDS.length && !c){ toast('请先选择支付方式',true); return; }
-  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4)+(c?' · '+c.s+' ····'+c.l4:''));
+  const a=ACCTS[paySel];
+  if(!ACCTS.length){ toast('请先绑定银行收款账号',true); openAcctSheet(); return; }
+  if(!a){ toast('请先选择收款账号',true); return; }
+  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
 }
 
-/* ---- 越南银行卡绑定 ---- */
+/* ---- 越南银行账号绑定（P2P 收款账号） ---- */
 const VN_BANKS=[
   ['Vietcombank','VCB'],['Techcombank','TCB'],['BIDV','BIDV'],['VietinBank','CTG'],
   ['Agribank','AGR'],['VPBank','VPB'],['ACB','ACB'],['MB Bank','MBB'],['Sacombank','STB'],
@@ -1630,91 +1628,92 @@ const VN_BANKS=[
   ['OCB','OCB'],['MSB','MSB'],['SeABank','SSB'],['LPBank','LPB'],['Nam A Bank','NAB'],
   ['PVcomBank','PVC']
 ];
-const CARD_KEY='lusd_cards';
-let CARDS=[];
-try{ CARDS=JSON.parse(localStorage.getItem(CARD_KEY)||'[]')||[]; }catch(_){ CARDS=[]; }
+const ACCT_KEY='lusd_accts';
+let ACCTS=[];
+try{ ACCTS=JSON.parse(localStorage.getItem(ACCT_KEY)||'[]')||[]; }catch(_){ ACCTS=[]; }
 let paySel=0;
 
+function maskAcct(no){ return no.length>4 ? '···· '+no.slice(-4) : no; }
+
 function initBanks(){
-  const sel=$('cardBank'); if(!sel) return;
+  const sel=$('acctBank'); if(!sel) return;
+  if(sel.options.length) return;
   sel.innerHTML=VN_BANKS.map(([n,c])=>'<option value="'+n+'|'+c+'">'+n+' ('+c+')</option>').join('');
 }
 
 function renderPay(){
   const box=$('payMethods'); if(!box) return;
   let html='';
-  CARDS.forEach((c,i)=>{
-    html+='<span class="chipx'+(i===paySel?' on':'')+'" onclick="pickCard('+i+')">'+c.s+' ···· '+c.l4+'</span>';
+  ACCTS.forEach((a,i)=>{
+    html+='<span class="chipx'+(i===paySel?' on':'')+'" onclick="pickAcct('+i+')">'+a.s+' '+maskAcct(a.no)+'</span>';
   });
-  if(CARDS.length) html+='<span class="chipx add" onclick="openCardSheet()">+ 添加银行卡</span>';
+  if(ACCTS.length) html+='<span class="chipx add" onclick="openAcctSheet()">+ 添加账号</span>';
   box.innerHTML=html;
 
   const box2=$('payBox'), empty=$('payEmpty'), stat=$('payStat');
-  const has = CARDS.length>0;
+  const has = ACCTS.length>0;
   if(box2) box2.classList.toggle('empty', !has);
   if(empty) empty.style.display = has ? 'none' : 'flex';
-  if(stat) stat.textContent = has ? ('已绑定 '+CARDS.length+' 张') : '未绑定';
+  if(stat) stat.textContent = has ? ('已绑定 '+ACCTS.length+' 个') : '未绑定';
 
   const ic=$('infoCardStat');
   if(ic){
-    ic.textContent = has
-      ? (CARDS[paySel||0].s+' ···· '+CARDS[paySel||0].l4+' · 点击管理')
-      : '未绑定 · 点击添加，用于 P2P 付款';
+    const a=ACCTS[paySel]||ACCTS[0];
+    ic.textContent = a ? (a.s+' '+maskAcct(a.no)+' · 点击管理')
+                       : '未绑定 · 点击添加，用于 P2P 收款';
   }
 }
 
-function pickCard(i){ paySel=i; renderPay(); }
+function pickAcct(i){ paySel=i; renderPay(); }
 
-function openCardSheet(){
-  initBanks(); renderCardList();
-  $('cardSheet').classList.add('show');
+function openAcctSheet(){
+  initBanks(); renderAcctList();
+  $('acctSheet').classList.add('show');
 }
-function closeCardSheet(){ $('cardSheet').classList.remove('show'); }
+function closeAcctSheet(){ $('acctSheet').classList.remove('show'); }
 
-function renderCardList(){
-  const box=$('cardList'); if(!box) return;
-  box.innerHTML=CARDS.map((c,i)=>
-    '<div class="citem"><div class="cb">'+c.s+'</div>'
-    +'<div class="ci"><div class="cn">'+c.b+'</div>'
-    +'<div class="cm">'+c.h+' · '+c.e+' · ····'+c.l4+'</div></div>'
-    +'<span class="cd" onclick="delCard('+i+')">×</span></div>').join('');
+function renderAcctList(){
+  const box=$('acctList'); if(!box) return;
+  box.innerHTML=ACCTS.map((a,i)=>
+    '<div class="citem"><div class="cb">'+a.s+'</div>'
+    +'<div class="ci"><div class="cn">'+a.b+'</div>'
+    +'<div class="cm">'+a.h+' · <span class="mono">'+a.no+'</span>'
+    +' <span class="cmini" onclick="copyAcct('+i+')">⧉</span></div></div>'
+    +'<span class="cd" onclick="delAcct('+i+')">×</span></div>').join('');
 }
-function delCard(i){
-  const c=CARDS[i];
-  CARDS.splice(i,1);
-  if(paySel>=CARDS.length) paySel=Math.max(0,CARDS.length-1);
-  saveCards(); renderCardList(); renderPay();
-  if(c) toast('已解绑 '+c.s+' ···· '+c.l4);
+function copyAcct(i){
+  const a=ACCTS[i]; if(!a) return;
+  navigator.clipboard && navigator.clipboard.writeText(a.no).catch(()=>{});
+  toast('已复制账号 '+a.no);
 }
-function saveCards(){ try{ localStorage.setItem(CARD_KEY, JSON.stringify(CARDS)); }catch(_){} }
+function delAcct(i){
+  const a=ACCTS[i];
+  ACCTS.splice(i,1);
+  if(paySel>=ACCTS.length) paySel=Math.max(0,ACCTS.length-1);
+  saveAccts(); renderAcctList(); renderPay();
+  if(a) toast('已解绑 '+a.s+' '+maskAcct(a.no));
+}
+function saveAccts(){ try{ localStorage.setItem(ACCT_KEY, JSON.stringify(ACCTS)); }catch(_){} }
 
-function fmtCard(el){
-  const v=el.value.replace(/\D/g,'').slice(0,19);
-  el.value=v.replace(/(.{4})/g,'$1 ').trim();
-}
-function fmtExp(el){
-  let v=el.value.replace(/\D/g,'').slice(0,4);
-  if(v.length>2) v=v.slice(0,2)+'/'+v.slice(2);
-  el.value=v;
+function fmtAcct(el){
+  el.value=el.value.replace(/\D/g,'').slice(0,19);
 }
 
-function saveCard(){
-  const raw=$('cardBank').value.split('|');
+function saveAcct(){
+  const raw=$('acctBank').value.split('|');
   const bank=raw[0], code=raw[1];
-  const no=$('cardNo').value.replace(/\s/g,'');
-  const name=$('cardName').value.trim();
-  const exp=$('cardExp').value.trim();
-  if(no.length<13||no.length>19){ toast('卡号格式不正确',true); return; }
-  if(!name){ toast('请填写持卡人姓名',true); return; }
-  if(!/^\d{2}\/\d{2}$/.test(exp)){ toast('有效期格式为 MM/YY',true); return; }
-  const mm=parseInt(exp.slice(0,2),10);
-  if(mm<1||mm>12){ toast('月份不正确',true); return; }
-  CARDS.push({b:bank, s:code, l4:no.slice(-4), h:name.toUpperCase(), e:exp});
-  paySel=CARDS.length-1;
-  saveCards(); renderCardList(); renderPay();
-  $('cardNo').value=''; $('cardName').value=''; $('cardExp').value='';
-  closeCardSheet();
-  toast('已绑定 '+code+' ···· '+no.slice(-4)+'，可用于 P2P 付款');
+  const no=$('acctNo').value.replace(/\D/g,'');
+  const name=$('acctName').value.trim();
+  if(no.length<6){ toast('银行账号至少 6 位数字',true); return; }
+  if(no.length>19){ toast('银行账号过长，请核对',true); return; }
+  if(name.length<2){ toast('请填写开户人姓名',true); return; }
+  if(ACCTS.some(a=>a.b===bank && a.no===no)){ toast('该账号已绑定',true); return; }
+  ACCTS.push({b:bank, s:code, no:no, h:name.toUpperCase()});
+  paySel=ACCTS.length-1;
+  saveAccts(); renderAcctList(); renderPay();
+  $('acctNo').value=''; $('acctName').value='';
+  closeAcctSheet();
+  toast('已绑定 '+code+' '+maskAcct(no)+'，可用于 P2P 收款');
 }
 
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
