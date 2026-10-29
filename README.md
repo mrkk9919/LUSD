@@ -24,6 +24,8 @@ test/
   LotterySystem.test.js
 scripts/
   deploy.js
+index.html            项目介绍页（落地页，GitHub Pages 首页）
+assets/               落地页图标资源
 demo/
   index.html          移动端代币详情页（界面演示，纯前端、无依赖）
   assets/             代币图标
@@ -46,6 +48,15 @@ npx hardhat node
 # 终端 B
 npx hardhat run scripts/deploy.js --network localhost
 ```
+
+## 两个页面
+
+| 路径 | 用途 |
+|---|---|
+| `/`（根目录 `index.html`） | 项目介绍落地页：概念、运作方式、用例、透明度、风险披露、FAQ |
+| `/demo/` | 移动端代币详情页：K 线、行情、持仓、风险扫描、钱包连接 |
+
+在线地址：https://mrkk9919.github.io/LUSD/
 
 ## 演示页面
 
