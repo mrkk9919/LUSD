@@ -333,6 +333,53 @@
   .p2p-btn.sell{background:var(--pink);color:#fff}
   .p2p-note{font-size:10.5px;color:var(--dim);line-height:1.65;padding:14px 2px 4px}
 
+  /* ── P2P 视图切换 + 链上订单流 ── */
+  .ob-switch{display:flex;gap:18px;margin:0 0 14px;border-bottom:1px solid var(--line);padding:0 2px}
+  .ob-switch button{background:none;border:0;font-family:inherit;font-size:12.5px;font-weight:600;
+    color:var(--dim);padding:0 0 9px;cursor:pointer;position:relative;transition:color .15s}
+  .ob-switch button.on{color:var(--text)}
+  .ob-switch button.on::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;
+    background:var(--green);border-radius:2px}
+  .ob-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px 11px}
+  .ob-live{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--green)}
+  .ob-live i{width:5px;height:5px;border-radius:50%;background:var(--green);
+    animation:obpulse 2.2s ease-out infinite}
+  @keyframes obpulse{0%{box-shadow:0 0 0 0 rgba(183,255,26,.55)}
+    70%{box-shadow:0 0 0 6px rgba(183,255,26,0)}100%{box-shadow:0 0 0 0 rgba(183,255,26,0)}}
+  .ob-vol{font-size:10px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .ob-head{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:6px;font-size:10.5px;
+    color:#6d747e;padding:0 2px 9px;border-bottom:1px solid #1b1e24}
+  .ob-head span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ob-body{max-height:min(58vh,440px);overflow-y:auto;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 26px),transparent 100%);
+    -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 26px),transparent 100%)}
+  .ob-body::-webkit-scrollbar{display:none}
+  .ob-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:6px;align-items:start;
+    padding:11px 2px;border-bottom:1px solid #16191e;cursor:pointer;transition:background .12s;
+    animation:obin .28s ease-out}
+  @keyframes obin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .ob-row:active{background:#14161a}
+  .ob-l1{display:flex;align-items:center;gap:6px;min-width:0}
+  .ob-pill{font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 6px;line-height:1.4;flex:none}
+  .ob-pill.buy{background:rgba(183,255,26,.13);color:var(--green)}
+  .ob-pill.sell{background:rgba(255,45,120,.14);color:#ff6b9e}
+  .ob-amt{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ob-amt.buy{color:var(--green)}
+  .ob-amt.sell{color:#ff6b9e}
+  .ob-time{font-size:10.5px;color:#6d747e;margin-top:4px;font-variant-numeric:tabular-nums}
+  .ob-val{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+  .ob-px{font-size:10.5px;color:#6d747e;margin-top:4px;font-variant-numeric:tabular-nums}
+  .ob-addr{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ob-acts{display:flex;gap:9px;justify-content:flex-end;align-items:center;margin-top:5px}
+  .ob-acts svg{width:10px;height:10px;stroke:#6a7079;fill:none;stroke-width:1.7;
+    stroke-linecap:round;stroke-linejoin:round}
+  .ob-acts svg.d{width:7px;height:12px;fill:#6a7079;stroke:none}
+  .ob-note{font-size:10.5px;color:var(--dim);line-height:1.65;padding:14px 2px 4px}
+
   /* ── 支付方式 / 银行卡 ── */
   .paybox{margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:12px 13px 13px;
     background:#0d0f11;transition:.18s}
@@ -873,6 +920,12 @@
       <span>P2P opens in <b>14h</b> · 可浏览商家与报价，暂不可下单</span>
     </div>
 
+    <div class="ob-switch" id="p2pView">
+      <button class="on" data-v="mkt" onclick="setP2PView('mkt')">商家挂单</button>
+      <button data-v="ob" onclick="setP2PView('ob')">链上订单</button>
+    </div>
+
+    <div id="p2pMkt">
     <div class="p2p-seg" id="p2pSeg">
       <button class="on" data-m="buy" onclick="setP2P('buy')">Buy LUSD</button>
       <button data-m="sell" onclick="setP2P('sell')">Sell LUSD</button>
@@ -916,6 +969,19 @@
     <div class="p2p-note">
       P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，
       下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。
+    </div>
+    </div><!-- /p2pMkt -->
+
+    <div id="p2pOb" style="display:none">
+      <div class="ob-top">
+        <span class="ob-live"><i></i>Live</span>
+        <span class="ob-vol" id="obVol">—</span>
+      </div>
+      <div class="ob-head">
+        <span>Type/Amount/Time</span><span>Value/Price</span><span>Addresses</span>
+      </div>
+      <div class="ob-body" id="obBody"></div>
+      <div class="ob-note">链上订单由智能合约托管撮合，成交后自动结算；地址已脱敏，点击可查看详情。</div>
     </div>
   </section>
 
@@ -1161,7 +1227,10 @@ const I18N = {
  "ⓘ Fees": "ⓘ Fees",
  "选择银行": "Select bank",
  "选择开户银行": "Select your bank",
- "银行清单与标识来自 VietQR 官方目录": "Bank list and logos from the official VietQR directory"
+ "银行清单与标识来自 VietQR 官方目录": "Bank list and logos from the official VietQR directory",
+ "商家挂单": "Merchant offers",
+ "链上订单": "On-chain orders",
+ "链上订单由智能合约托管撮合，成交后自动结算；地址已脱敏，点击可查看详情。": "On-chain orders are escrowed and matched by smart contracts and settle automatically. Addresses are truncated — tap for details."
 },
   vi: {
  "发行公告": "Thông báo",
@@ -1343,7 +1412,14 @@ const I18N = {
  "50 merchants · price sorted": "50 người bán · sắp theo giá",
  "Dev": "Nhà phát triển",
  "Insider": "Nội bộ",
- "This security review is solely for evaluating token safety. Its accuracy isn't 100% guaranteed. It doesn't constitute an endorsement or recommendation.": "Bản đánh giá bảo mật này chỉ nhằm đánh giá độ an toàn của token. Không đảm bảo chính xác 100%. Không cấu thành sự chứng thực hay khuyến nghị."
+ "This security review is solely for evaluating token safety. Its accuracy isn't 100% guaranteed. It doesn't constitute an endorsement or recommendation.": "Bản đánh giá bảo mật này chỉ nhằm đánh giá độ an toàn của token. Không đảm bảo chính xác 100%. Không cấu thành sự chứng thực hay khuyến nghị.",
+ "商家挂单": "Lệnh người bán",
+ "链上订单": "Lệnh trên chuỗi",
+ "链上订单由智能合约托管撮合，成交后自动结算；地址已脱敏，点击可查看详情。": "Lệnh trên chuỗi được hợp đồng thông minh giữ hộ, khớp lệnh và tự động thanh toán. Địa chỉ đã được rút gọn — nhấn để xem chi tiết.",
+ "Type/Amount/Time": "Loại/Số lượng/Thời gian",
+ "Value/Price": "Giá trị/Giá",
+ "Addresses": "Địa chỉ",
+ "24h vol": "KL 24h"
 }
 };
 const LANG_NAME = { zh:'中文', en:'English', vi:'Tiếng Việt' };
@@ -1417,6 +1493,7 @@ function rerenderDynamic(){
   try{ renderPay(); }catch(_){}
   try{ renderAcctList(); }catch(_){}
   try{ renderP2P(); }catch(_){}
+  try{ renderOB(); }catch(_){}
   try{ calcP2P(); }catch(_){}
   try{ renderTx(); }catch(_){}
   try{ renderLiq(); }catch(_){}
@@ -2086,6 +2163,85 @@ function p2pOrder(i){
   toast(T('P2P 将于 14 小时后开放 · ')+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
 }
 
+/* ---- 链上订单流（P2P · on-chain order book） ---- */
+const OB_HEX='0123456789abcdef';
+function obHex(n){
+  let s='';
+  for(let i=0;i<n;i++){
+    let c=OB_HEX[Math.floor(Math.random()*16)];
+    if(/[a-f]/.test(c) && Math.random()<.4) c=c.toUpperCase();
+    s+=c;
+  }
+  return s;
+}
+function obAddr(){ return '0x'+obHex(4)+'...'+obHex(4); }
+
+let OB_ROWS=[];
+function obNew(t){
+  const sell=Math.random()<.58;
+  const amt = sell ? +(1.2+Math.random()*17).toFixed(1) : +(12+Math.random()*880).toFixed(1);
+  const px  = ['1.0000','1.0000','1.0000','0.9999','1.000'][Math.floor(Math.random()*5)];
+  return { s: sell?'s':'b', a: amt, p: px, t: t||0, d: obAddr() };
+}
+function obSeed(){
+  OB_ROWS=[]; let t=5;
+  for(let i=0;i<20;i++){ OB_ROWS.push(obNew(t)); t += 7+Math.floor(Math.random()*92); }
+  renderOB();
+}
+function obAgo(s){ return s<60 ? s+'s' : Math.floor(s/60)+'m'; }
+
+const OB_ICON_D='<svg class="d" viewBox="0 0 10 18"><path d="M5 0l5 9-5 9-5-9z"/></svg>';
+const OB_ICON_E='<svg viewBox="0 0 24 24"><path d="M4 20l1-4 11-11 3 3-11 11z"/><path d="M14.5 6.5l3 3"/></svg>';
+
+function renderOB(){
+  const box=$('obBody'); if(!box) return;
+  box.innerHTML=OB_ROWS.map((r,i)=>{
+    const sell=r.s==='s', cls=sell?'sell':'buy';
+    return '<div class="ob-row" onclick="obDetail('+i+')">'
+      +'<div>'
+        +'<div class="ob-l1"><span class="ob-pill '+cls+'">'+T(sell?'Sell':'Buy')+'</span>'
+        +'<span class="ob-amt '+cls+'">'+(sell?'-':'+')+r.a+'</span></div>'
+        +'<div class="ob-time">'+obAgo(r.t)+'</div>'
+      +'</div>'
+      +'<div><div class="ob-val">$'+r.a+'</div><div class="ob-px">$'+r.p+'</div></div>'
+      +'<div><div class="ob-addr">'+r.d+'</div><div class="ob-acts">'+OB_ICON_D+OB_ICON_E+'</div></div>'
+    +'</div>';
+  }).join('');
+  const vol=$('obVol');
+  if(vol){
+    const sum=OB_ROWS.reduce((s,r)=>s+r.a,0);
+    vol.textContent=T('24h vol')+' $'+sum.toLocaleString(localeOf(),{maximumFractionDigits:0});
+  }
+}
+
+let p2pView='mkt';
+function setP2PView(v){
+  p2pView=v;
+  const mkt=$('p2pMkt'), ob=$('p2pOb');
+  if(mkt) mkt.style.display = v==='mkt' ? '' : 'none';
+  if(ob)  ob.style.display  = v==='ob'  ? '' : 'none';
+  document.querySelectorAll('#p2pView button').forEach(b=>
+    b.classList.toggle('on', b.getAttribute('data-v')===v));
+  if(v==='ob') renderOB();
+}
+
+function obDetail(i){
+  const r=OB_ROWS[i]; if(!r) return;
+  const sell=r.s==='s';
+  toast(T(sell?'卖出 ':'买入 ')+r.a+' LUSD @ $'+r.p+' · '+r.d+' · '+obAgo(r.t));
+}
+
+function obTick(){
+  if(p2pView!=='ob') return;
+  const box=$('obBody');
+  const atTop = !box || box.scrollTop<24;
+  OB_ROWS.forEach(r=>r.t+=5);
+  OB_ROWS.unshift(obNew(0));
+  if(OB_ROWS.length>24) OB_ROWS.length=24;
+  renderOB();
+  if(atTop && box) box.scrollTop=0;
+}
+
 /* ---- 越南银行账号绑定（P2P 收款账号） ---- */
 /* 银行清单与标识取自 VietQR 官方目录（api.vietqr.io），越南本地支付通用数据源 */
 const BANK_LOGO={
@@ -2265,6 +2421,7 @@ function saveAcct(){
 
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
 renderHoldings(); renderTx(); renderLiq(); renderP2P(); calcP2P();
+obSeed(); setInterval(obTick, 5000);
 renderBankPick(); renderPay(); applyI18n();
 </script>
 </body>
