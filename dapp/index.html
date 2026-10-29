@@ -80,6 +80,50 @@
   .wacts button{background:#1a1d23;border:1px solid var(--line);border-radius:11px;padding:11px 4px;
     color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
   .wacts button:active{background:#22262d}
+
+  /* 交易记录 / 链上存证 */
+  .ordentry{display:flex;align-items:center;gap:10px;width:100%;margin-top:8px;padding:12px 14px;
+    background:#0b0c0e;border:1px solid var(--line);border-radius:12px;color:var(--text);
+    font-family:inherit;cursor:pointer;text-align:left}
+  .ordentry:active{background:#14161a}
+  .ordentry .oe-i{width:26px;height:26px;border-radius:8px;background:rgba(183,255,26,.10);
+    display:flex;align-items:center;justify-content:center;flex:none}
+  .ordentry .oe-i svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:1.9}
+  .ordentry .oe-t{flex:1;min-width:0;font-size:12.5px;font-weight:700;line-height:1.35}
+  .ordentry .oe-t i{display:block;font-style:normal;font-size:10.5px;font-weight:500;color:var(--dim);margin-top:2px}
+  .ordentry .oe-n{font-size:11px;font-weight:800;color:var(--green);background:rgba(183,255,26,.10);
+    border-radius:999px;padding:2px 8px;flex:none}
+  .ordentry .oe-c{color:var(--dim);font-size:15px;flex:none}
+
+  .ord-sum{display:flex;gap:16px;margin:2px 0 12px}
+  .ord-sum div{flex:1}
+  .ord-sum .k{font-size:10.5px;color:var(--dim);letter-spacing:.02em}
+  .ord-sum .v{font-size:15px;font-weight:800;margin-top:3px}
+  .ordlist{max-height:min(62vh,520px);overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ordlist::-webkit-scrollbar{display:none}
+  .ord{padding:12px 0;border-bottom:1px solid #17191d}
+  .ord:last-child{border-bottom:0}
+  .ord-h{display:flex;align-items:center;gap:8px}
+  .ord-h b{font-size:13px;font-weight:800;letter-spacing:-.2px}
+  .ord-time{margin-left:auto;font-size:10.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .ord-b{display:flex;gap:8px;align-items:baseline;margin-top:5px;font-size:11px;color:var(--muted)}
+  .ord-b .ord-party{margin-left:auto;color:var(--dim);font-size:10.5px;max-width:52%;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ord-f{display:flex;align-items:center;gap:8px;margin-top:7px}
+  .ord-hash{font-size:10.5px;color:var(--dim);letter-spacing:0}
+  .ord-hash.on{color:#4ecb8c}
+  .ord-hash.on::before{content:'●';margin-right:5px;font-size:7px;vertical-align:middle}
+  .ord-act{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--green);
+    background:rgba(183,255,26,.09);border:1px solid rgba(183,255,26,.24);border-radius:999px;
+    padding:3px 9px;cursor:pointer;white-space:nowrap}
+  .ord-act.gray{color:var(--muted);background:#14161a;border-color:var(--line)}
+  .ord-empty{text-align:center;padding:34px 10px;color:var(--dim);font-size:12px;line-height:1.7}
+  .ord-empty b{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+  .ord-mini{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 2px;
+    padding:10px 12px;background:#0e1013;border:1px solid var(--line);border-radius:11px;
+    font-size:11.5px;color:var(--muted);cursor:pointer}
+  .ord-mini b{color:var(--text);font-weight:800}
+  .ord-mini .om-c{color:var(--green);font-weight:700}
   .wro{margin-top:10px;display:flex;gap:8px}
   .wro input{flex:1;background:#0b0c0e;border:1px solid var(--line);border-radius:11px;padding:12px;
     color:var(--text);font-size:12.5px;font-family:inherit;outline:none;min-width:0}
@@ -768,6 +812,7 @@
         <div class="kv"><span class="k">Market cap</span><span class="v">$12.48M</span></div>
         <div class="kv link" onclick="detail('Buy / Sell tax')"><span class="k">Buy / Sell tax</span><span class="v">0% / 0% ›</span></div>
         <div class="kv link" onclick="goTab('risk')"><span class="k">Risk</span><span class="v" style="color:#ffb020">⚠ 1 ›</span></div>
+        <div class="kv link" onclick="openOrders()"><span class="k">交易记录</span><span class="v"><span id="ordCntI">0</span> ›</span></div>
         <div class="kv"><span class="k">Circulating supply</span><span class="v">12.48M</span></div>
         <div class="kv"><span class="k">Maximum supply</span><span class="v">∞</span></div>
         <div class="kv"><span class="k">Network</span><span class="v"><svg class="chainic" viewBox="0 0 32 32" width="13" height="13" aria-label="Base"><circle cx="16" cy="16" r="16" fill="#0052FF"/><path fill="#fff" d="M9.6 5.4h6.3a5.3 5.3 0 0 1 0 10.6H9.6z"/><path fill="#fff" d="M9.6 16.2h7.3a5.3 5.3 0 0 1 0 10.6H9.6z"/></svg> Base</span></div>
@@ -1011,6 +1056,11 @@
     </div>
     <div class="card" style="padding:2px 14px" id="p2pList"></div>
 
+    <div class="ord-mini" onclick="openOrders()">
+      <span id="ordMiniTxt"></span>
+      <span class="om-c" id="ordMiniC">查看链上记录 ›</span>
+    </div>
+
     <div class="p2p-note">
       <span>P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。</span>
       <span class="note-gas">下单需连接钱包并处于 Base 网络；钱包内需保留少量 ETH 支付 Gas，建议不低于 0.0005 ETH。</span>
@@ -1143,7 +1193,22 @@
       <button onclick="walletExplorer()">在 OKX 查看</button>
       <button onclick="switchToBase()">切换网络</button>
     </div>
+    <button class="ordentry" onclick="openOrders()">
+      <span class="oe-i"><svg viewBox="0 0 24 24"><path d="M5 3h14v18l-7-4-7 4z"/><path d="M9 8h6M9 12h4"/></svg></span>
+      <span class="oe-t">交易记录<i>下单后可上链存证，钱包与 OKX 浏览器均可查</i></span>
+      <span class="oe-n" id="ordCntW">0</span>
+      <span class="oe-c">›</span>
+    </button>
     <button class="go" style="background:#1a1d23;color:var(--pink);border:1px solid var(--line)" onclick="disconnectWallet()">断开连接</button>
+  </div>
+</div>
+
+<div class="sheet" id="ordersSheet" onclick="if(event.target===this)closeOrders()">
+  <div class="sheetbox">
+    <div class="sheet-h"><span class="t">交易记录</span><span class="x" onclick="closeOrders()">×</span></div>
+    <div class="ord-sum" id="ordSum"></div>
+    <div class="ordlist" id="ordList"></div>
+    <p class="cs-note" style="text-align:left;line-height:1.65">演示环境的订单保存在本机浏览器。点「上链存证」会用当前钱包发起一笔 0 ETH 的自转交易，把订单信息写入 Base 链 calldata —— 之后可在钱包 App 的交易记录、以及 OKX 浏览器中按哈希查到。</p>
   </div>
 </div>
 
@@ -1185,6 +1250,27 @@ const I18N = {
  "收款账号": "Payout account",
  "未绑定": "Not linked",
  "已绑定 · 可下单兑换 LUSD": "Linked · you can trade LUSD now",
+ "LUSD 兑换": "LUSD Swap",
+ "我的订单": "My orders",
+ "笔": "orders",
+ "查看链上记录 ›": "View on-chain records ›",
+ "交易记录": "Transactions",
+ "累计成交": "Total volume",
+ "已上链存证": "On-chain",
+ "还没有交易记录": "No transactions yet",
+ "下单后会出现在这里，可上链存证": "Orders will appear here and can be anchored on-chain.",
+ "买入": "Buy",
+ "OKX 查看": "View on OKX",
+ "上链存证": "Anchor on-chain",
+ "本机记录 · 未上链": "Local only · not on-chain",
+ "该订单尚未上链": "This order is not on-chain yet",
+ "请先连接钱包再存证": "Connect a wallet first",
+ "只读地址无法发起交易": "Read-only address cannot send transactions",
+ "请在钱包中确认存证交易": "Confirm the proof transaction in your wallet",
+ "已上链 · ": "Anchored · ",
+ "已取消存证": "Anchoring cancelled",
+ "下单后可上链存证，钱包与 OKX 浏览器均可查": "Anchor orders on-chain — visible in your wallet and on OKX Explorer",
+ "演示环境的订单保存在本机浏览器。点「上链存证」会用当前钱包发起一笔 0 ETH 的自转交易，把订单信息写入 Base 链 calldata —— 之后可在钱包 App 的交易记录、以及 OKX 浏览器中按哈希查到。": "Demo orders are stored in this browser. Tapping “Anchor on-chain” sends a 0 ETH self-transfer from your wallet with the order memo in calldata — afterwards you can find it in your wallet's activity and on OKX Explorer by hash.",
  "请先绑定越南银行账号": "Link a Vietnamese bank account first",
  "绑定越南银行账号": "Link a Vietnamese bank account",
  "20 家越南银行 · 用于 P2P 收款": "20 Vietnamese banks · For P2P payouts",
@@ -1323,6 +1409,27 @@ const I18N = {
  "收款账号": "Tài khoản nhận tiền",
  "未绑定": "Chưa liên kết",
  "已绑定 · 可下单兑换 LUSD": "Đã liên kết · có thể giao dịch LUSD",
+ "LUSD 兑换": "Đổi LUSD",
+ "我的订单": "Đơn của tôi",
+ "笔": "lệnh",
+ "查看链上记录 ›": "Xem bản ghi on-chain ›",
+ "交易记录": "Lịch sử giao dịch",
+ "累计成交": "Tổng khối lượng",
+ "已上链存证": "Đã lên chuỗi",
+ "还没有交易记录": "Chưa có giao dịch",
+ "下单后会出现在这里，可上链存证": "Đơn hàng sẽ hiện ở đây và có thể ghi lên chuỗi.",
+ "买入": "Mua",
+ "OKX 查看": "Xem trên OKX",
+ "上链存证": "Ghi lên chuỗi",
+ "本机记录 · 未上链": "Chỉ lưu máy · chưa lên chuỗi",
+ "该订单尚未上链": "Đơn hàng chưa được ghi lên chuỗi",
+ "请先连接钱包再存证": "Vui lòng kết nối ví trước",
+ "只读地址无法发起交易": "Địa chỉ chỉ đọc không thể gửi giao dịch",
+ "请在钱包中确认存证交易": "Xác nhận giao dịch chứng thực trong ví",
+ "已上链 · ": "Đã lên chuỗi · ",
+ "已取消存证": "Đã huỷ ghi chuỗi",
+ "下单后可上链存证，钱包与 OKX 浏览器均可查": "Ghi đơn hàng lên chuỗi — xem được trong ví và trên OKX Explorer",
+ "演示环境的订单保存在本机浏览器。点「上链存证」会用当前钱包发起一笔 0 ETH 的自转交易，把订单信息写入 Base 链 calldata —— 之后可在钱包 App 的交易记录、以及 OKX 浏览器中按哈希查到。": "Đơn hàng demo được lưu trong trình duyệt này. Nhấn “Ghi lên chuỗi” sẽ gửi một giao dịch tự chuyển 0 ETH kèm nội dung đơn hàng trong calldata — sau đó bạn xem được trong lịch sử ví và trên OKX Explorer theo hash.",
  "请先绑定越南银行账号": "Vui lòng liên kết tài khoản ngân hàng Việt Nam trước",
  "绑定越南银行账号": "Liên kết tài khoản ngân hàng VN",
  "20 家越南银行 · 用于 P2P 收款": "20 ngân hàng Việt Nam · Nhận tiền P2P",
@@ -1572,6 +1679,7 @@ function rerenderDynamic(){
   try{ renderTx(); }catch(_){}
   try{ renderLiq(); }catch(_){}
   try{ renderHoldings(); }catch(_){}
+  try{ renderOrders(); }catch(_){}
   try{ updateConnectBtn(); }catch(_){}
   try{ refreshGasLine(); }catch(_){}
 }
@@ -1786,10 +1894,12 @@ async function doTrade(){
   if(state.mode==='buy'){
     if(v>state.usdc){ toast('USDC 余额不足',true); return; }
     state.usdc-=v; state.lusd+=v;
+    addOrder({side:'buy', qty:v, price:1, fiat:v, cur:'USD', party:'LUSD 兑换', acct:'—', src:'swap'});
     toast('买入成功');
   }else{
     if(v>state.lusd){ toast('LUSD 余额不足',true); return; }
     state.lusd-=v; state.usdc+=v;
+    addOrder({side:'sell', qty:v, price:1, fiat:v, cur:'USD', party:'LUSD 兑换', acct:'—', src:'swap'});
     toast('卖出成功');
   }
   setMode(state.mode);
@@ -2352,7 +2462,104 @@ function p2pOrder(i){
   const a=ACCTS[paySel];
   if(!ACCTS.length){ toast('请先绑定银行收款账号',true); openAcctSheet(); return; }
   if(!a){ toast('请先选择收款账号',true); return; }
+  const raw=parseFloat((($('p2pAmt')||{}).value||'').replace(/[^\d.]/g,''))||0;
+  if(raw<=0){ toast('请输入兑换数量',true); return; }
+  const usd = p2pMode==='buy' ? (isVI()? raw/USD_VND : raw) : raw*o.price;
+  const qty = p2pMode==='buy' ? usd/o.price : raw;
+  addOrder({side:p2pMode, qty:qty, price:o.price, fiat:usd, cur:'USD',
+            party:o.n, acct:a.s+' '+maskAcct(a.no), src:'p2p'});
   toast(T('下单成功 · ')+o.n+' @ '+o.price.toFixed(4)+' · '+a.s+' '+maskAcct(a.no));
+}
+
+/* ---- 交易记录 / 链上存证 ---- */
+const ORD_KEY='lusd_orders';
+let ORDERS=[];
+try{ ORDERS=JSON.parse(localStorage.getItem(ORD_KEY)||'[]')||[]; }catch(_){ ORDERS=[]; }
+function saveOrders(){ try{ localStorage.setItem(ORD_KEY, JSON.stringify(ORDERS.slice(0,60))); }catch(_){} }
+function ordId(){ return 'L'+Date.now().toString(36).toUpperCase().slice(-6)+Math.random().toString(36).slice(2,5).toUpperCase(); }
+function addOrder(o){
+  const rec=Object.assign({id:ordId(), ts:Date.now(), hash:'', chain:false}, o);
+  ORDERS.unshift(rec); if(ORDERS.length>60) ORDERS.length=60;
+  saveOrders(); renderOrders();
+  return rec;
+}
+function ordTime(ts){
+  const d=new Date(ts), p=n=>String(n).padStart(2,'0');
+  const same=d.toDateString()===new Date().toDateString();
+  return (same?'':p(d.getMonth()+1)+'/'+p(d.getDate())+' ')+p(d.getHours())+':'+p(d.getMinutes());
+}
+function renderOrders(){
+  const n=ORDERS.length;
+  const cw=$('ordCntW'); if(cw) cw.textContent=n;
+  const ci=$('ordCntI'); if(ci) ci.textContent=n;
+  const mt=$('ordMiniTxt'); if(mt) mt.textContent=T('我的订单')+' · '+n+' '+(LANG==='en'?(n===1?'order':'orders'):T('笔'));
+  const mc=$('ordMiniC'); if(mc) mc.textContent=T('查看链上记录 ›');
+  const sum=$('ordSum');
+  if(sum){
+    const vol=ORDERS.reduce((s,r)=>s+(r.fiat||0),0);
+    const onchain=ORDERS.filter(r=>r.chain).length;
+    sum.innerHTML='<div><div class="k">'+T('累计成交')+'</div><div class="v num">$'
+      +vol.toLocaleString('en-US',{maximumFractionDigits:2})+'</div></div>'
+      +'<div><div class="k">'+T('已上链存证')+'</div><div class="v num" style="color:var(--green)">'
+      +onchain+' / '+n+'</div></div>';
+  }
+  const box=$('ordList'); if(!box) return;
+  if(!n){
+    box.innerHTML='<div class="ord-empty"><b>'+T('还没有交易记录')+'</b>'+T('下单后会出现在这里，可上链存证')+'</div>';
+    return;
+  }
+  box.innerHTML=ORDERS.map(function(r,i){
+    const buy=r.side==='buy';
+    const fiat = r.cur==='VND'
+      ? '₫'+vnd(r.fiat||0).toLocaleString('vi-VN')
+      : '$'+(r.fiat||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const act = r.chain
+      ? '<span class="ord-act" onclick="ordView('+i+')">'+T('OKX 查看')+'</span>'
+      : '<span class="ord-act" onclick="anchorOrder('+i+')">'+T('上链存证')+'</span>';
+    return '<div class="ord">'
+      +'<div class="ord-h"><span class="ob-pill '+(buy?'buy':'sell')+'">'+(buy?T('买入'):T('卖出'))+'</span>'
+      +'<b class="num">'+fmt(r.qty||0)+' LUSD</b>'
+      +'<span class="ord-time">'+ordTime(r.ts)+'</span></div>'
+      +'<div class="ord-b"><span>'+fiat+' · @'+(r.price||1).toFixed(4)+'</span>'
+      +'<span class="ord-party">'+T(r.party||'')+(r.acct&&r.acct!=='—'?' · '+r.acct:'')+'</span></div>'
+      +'<div class="ord-f"><span class="ord-hash'+(r.chain?' on':'')+'">'
+      +(r.chain?short(r.hash):T('本机记录 · 未上链'))+'</span>'+act+'</div>'
+      +'</div>';
+  }).join('');
+}
+function openOrders(){ renderOrders(); $('ordersSheet').classList.add('show'); }
+function closeOrders(){ $('ordersSheet').classList.remove('show'); }
+function ordView(i){
+  const r=ORDERS[i]; if(!r) return;
+  if(r.chain&&r.hash) okxOpen(OKX_BASE+'tx/'+r.hash);
+  else toast(T('该订单尚未上链'),true);
+}
+async function anchorOrder(i){
+  const r=ORDERS[i]; if(!r) return;
+  if(r.chain){ ordView(i); return; }
+  if(!connectedAddr){ toast(T('请先连接钱包再存证'),true); closeOrders(); connectWallet(); return; }
+  if(readOnly||!activeWallet){ toast(T('只读地址无法发起交易'),true); return; }
+  if((chainId||'').toLowerCase()!==GAS_CHAIN){ toast(T('请先切换到 Base 网络'),true); trySwitchBase(); return; }
+  const memo='LUSD-ORDER|'+r.id+'|'+r.side+'|'+r.qty+'|'+r.price+'|'+r.ts;
+  const data='0x'+Array.from(new TextEncoder().encode(memo))
+    .map(b=>b.toString(16).padStart(2,'0')).join('');
+  toast(T('请在钱包中确认存证交易'));
+  try{
+    let hash=null;
+    try{
+      hash=await activeWallet.provider.request({method:'eth_sendTransaction',
+        params:[{from:connectedAddr,to:connectedAddr,value:'0x0',data:data}]});
+    }catch(e1){
+      /* 个别钱包不接受带 data 的自转，降级为普通 0 ETH 自转 */
+      hash=await activeWallet.provider.request({method:'eth_sendTransaction',
+        params:[{from:connectedAddr,to:connectedAddr,value:'0x0'}]});
+    }
+    if(!hash) throw new Error('no hash');
+    r.hash=hash; r.chain=true; saveOrders(); renderOrders();
+    toast(T('已上链 · ')+short(hash));
+  }catch(e){
+    toast(T('已取消存证'),true);
+  }
 }
 
 /* ---- 链上订单流（P2P · on-chain order book） ---- */
@@ -2632,7 +2839,7 @@ function saveAcct(){
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
 renderHoldings(); renderTx(); renderLiq(); setP2P(p2pMode);
 obSeed(); setInterval(obTick, 5000);
-renderBankPick(); renderPay(); applyI18n();
+renderBankPick(); renderPay(); renderOrders(); applyI18n();
 </script>
 </body>
 </html>
