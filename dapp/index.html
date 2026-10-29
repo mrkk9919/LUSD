@@ -350,6 +350,9 @@
     font-weight:700;font-family:inherit;cursor:pointer;background:var(--green);color:#0a0b0d}
   .p2p-btn.sell{background:var(--pink);color:#fff}
   .p2p-note{font-size:10.5px;color:var(--dim);line-height:1.65;padding:14px 2px 4px}
+  .p2p-note span{display:block}
+  .p2p-note .note-gas{margin-top:9px;padding-left:9px;border-left:2px solid rgba(183,255,26,.35);
+    color:#8a8f98}
 
   /* ── P2P 视图切换 + 链上订单流 ── */
   .ob-switch{display:flex;gap:18px;margin:0 0 14px;border-bottom:1px solid var(--line);padding:0 2px}
@@ -548,6 +551,11 @@
   .sheet .go.b{background:var(--green)}
   .sheet .go.s{background:var(--pink);color:#fff}
   .balrow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:10px}
+  .gasline{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:11.5px;color:var(--dim);
+    line-height:1.4}
+  .gasline .gd{width:5px;height:5px;border-radius:50%;background:currentColor;flex:none}
+  .gasline.ok{color:#4ecb8c}
+  .gasline.bad{color:#ff6b9e}
 
   /* modal (wallet picker) */
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:70;padding:20px}
@@ -985,8 +993,8 @@
     <div class="card" style="padding:2px 14px" id="p2pList"></div>
 
     <div class="p2p-note">
-      P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，
-      下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。
+      <span>P2P 交易由用户之间直接完成，平台提供撮合与担保，不参与定价。所有商家均已完成 KYC，下单后资产进入平台托管，确认收款后释放。如遇纠纷可提交客服仲裁。</span>
+      <span class="note-gas">下单需连接钱包并处于 Base 网络；钱包内需保留少量 ETH 支付 Gas，建议不低于 0.0005 ETH。</span>
     </div>
     </div><!-- /p2pMkt -->
 
@@ -1058,9 +1066,10 @@
     </div>
     <div class="fld">
       <div class="l"><span>获得</span><span id="recvBal">余额 0.00</span></div>
-      <div class="ir"><input id="recv" type="text" value="100.00" readonly><span class="u">LUSD</span></div>
+      <div class="ir"><input id="recv" type="text" value="100.00" readonly><span class="u" id="recvSym">LUSD</span></div>
     </div>
     <button class="go b" id="goBtn" onclick="doTrade()">买入 LUSD</button>
+    <div class="gasline" id="gasLine"><span class="gd"></span><span id="gasTxt">连接钱包后可交易</span></div>
     <div class="balrow"><span>1 LUSD = 1.0000 USDC</span><span id="rateHint">无滑点</span></div>
   </div>
 </div>
@@ -1250,7 +1259,17 @@ const I18N = {
  "链上订单": "On-chain orders",
  "链上订单由智能合约托管撮合，成交后自动结算；地址已脱敏，点击任意订单可在 OKX 浏览器查看该地址。": "On-chain orders are escrowed and matched by smart contracts and settle automatically. Addresses are truncated — tap any order to view the address on OKX.",
  "地址已复制": "Address copied",
- "已关注 ": "Watching "
+ "已关注 ": "Watching ",
+ "请先连接钱包再交易": "Connect a wallet before trading",
+ "只读地址无法交易，请连接钱包": "Read-only address cannot trade — connect a wallet",
+ "请先切换到 Base 网络": "Switch to Base network first",
+ "读取 ETH 余额失败，请重试": "Failed to read ETH balance, please retry",
+ "ETH 不足：至少需要 0.0005 ETH 支付 Gas": "Insufficient ETH — at least 0.0005 ETH is required for gas",
+ "连接钱包后可交易": "Connect a wallet to trade",
+ "只读地址无法交易": "Read-only address cannot trade",
+ "无法读取 ETH 余额": "Unable to read ETH balance",
+ "Gas 不足": "Insufficient gas",
+ "下单需连接钱包并处于 Base 网络；钱包内需保留少量 ETH 支付 Gas，建议不低于 0.0005 ETH。": "Trading requires a connected wallet on Base. Keep a small ETH balance for gas — 0.0005 ETH or more is recommended."
 },
   vi: {
  "发行公告": "Thông báo",
@@ -1441,7 +1460,17 @@ const I18N = {
  "Addresses": "Địa chỉ",
  "24h vol": "KL 24h",
  "地址已复制": "Đã sao chép địa chỉ",
- "已关注 ": "Đang theo dõi "
+ "已关注 ": "Đang theo dõi ",
+ "请先连接钱包再交易": "Vui lòng kết nối ví trước khi giao dịch",
+ "只读地址无法交易，请连接钱包": "Địa chỉ chỉ đọc không thể giao dịch — vui lòng kết nối ví",
+ "请先切换到 Base 网络": "Vui lòng chuyển sang mạng Base trước",
+ "读取 ETH 余额失败，请重试": "Không đọc được số dư ETH, vui lòng thử lại",
+ "ETH 不足：至少需要 0.0005 ETH 支付 Gas": "ETH không đủ — cần ít nhất 0.0005 ETH để trả Gas",
+ "连接钱包后可交易": "Kết nối ví để giao dịch",
+ "只读地址无法交易": "Địa chỉ chỉ đọc không thể giao dịch",
+ "无法读取 ETH 余额": "Không đọc được số dư ETH",
+ "Gas 不足": "Gas không đủ",
+ "下单需连接钱包并处于 Base 网络；钱包内需保留少量 ETH 支付 Gas，建议不低于 0.0005 ETH。": "Giao dịch cần ví đã kết nối trên mạng Base. Giữ một ít ETH để trả Gas — nên từ 0.0005 ETH trở lên."
 }
 };
 const LANG_NAME = { zh:'中文', en:'English', vi:'Tiếng Việt' };
@@ -1521,6 +1550,7 @@ function rerenderDynamic(){
   try{ renderLiq(); }catch(_){}
   try{ renderHoldings(); }catch(_){}
   try{ updateConnectBtn(); }catch(_){}
+  try{ refreshGasLine(); }catch(_){}
 }
 
 function toggleLangMenu(e){
@@ -1645,7 +1675,7 @@ function drawLiqBars(){
 }
 
 /* trade */
-function openSheet(mode){ setMode(mode); $('tradeSheet').classList.add('show'); liftToast(); }
+function openSheet(mode){ setMode(mode); $('tradeSheet').classList.add('show'); liftToast(); refreshGasLine(); }
 function closeSheet(){ $('tradeSheet').classList.remove('show'); }
 function setMode(m){
   state.mode=m;
@@ -1654,6 +1684,7 @@ function setMode(m){
   $('sheetTitle').textContent = m==='buy'?T('买入 LUSD'):T('卖出 LUSD');
   $('payLab').textContent = m==='buy'?T('支付'):T('卖出');
   $('paySym').textContent = m==='buy'?'USDC':'LUSD';
+  $('recvSym').textContent = m==='buy'?'LUSD':'USDC';
   $('goBtn').className = 'go ' + (m==='buy'?'b':'s');
   $('goBtn').textContent = m==='buy'?T('买入 LUSD'):T('卖出 LUSD');
   $('payBal').textContent = T('余额 ')+fmt(m==='buy'?state.usdc:state.lusd)+(m==='buy'?' USDC':' LUSD');
@@ -1661,10 +1692,65 @@ function setMode(m){
   quote();
 }
 function quote(){ const v=parseFloat($('amount').value)||0; $('recv').value=fmt(v); }
-function doTrade(){
+/* ---- 交易前置校验：钱包已连接 + Base 网络 + ETH 足够付 Gas ---- */
+const MIN_GAS_ETH = 0.0005;
+const GAS_CHAIN   = '0x2105';
+
+async function readEthBalance(){
+  const p = activeWallet && activeWallet.provider;
+  if(!p || !connectedAddr || readOnly) return null;
+  try{
+    const hex = await p.request({method:'eth_getBalance', params:[connectedAddr,'latest']});
+    return Number(BigInt(hex))/1e18;
+  }catch(_){ return null; }
+}
+
+async function tradeGate(){
+  if(!connectedAddr){
+    toast(T('请先连接钱包再交易'), true);
+    connectWallet();
+    return false;
+  }
+  if(readOnly || !activeWallet){
+    toast(T('只读地址无法交易，请连接钱包'), true);
+    return false;
+  }
+  if((chainId||'').toLowerCase() !== GAS_CHAIN){
+    toast(T('请先切换到 Base 网络'), true);
+    trySwitchBase();
+    return false;
+  }
+  const eth = await readEthBalance();
+  if(eth === null){ toast(T('读取 ETH 余额失败，请重试'), true); return false; }
+  if(eth < MIN_GAS_ETH){
+    toast(T('ETH 不足：至少需要 0.0005 ETH 支付 Gas'), true);
+    return false;
+  }
+  return true;
+}
+
+async function refreshGasLine(){
+  const line=$('gasLine'), txt=$('gasTxt');
+  if(!line || !txt) return;
+  line.className='gasline';
+  if(!connectedAddr){ txt.textContent=T('连接钱包后可交易'); return; }
+  if(readOnly || !activeWallet){ txt.textContent=T('只读地址无法交易'); line.classList.add('bad'); return; }
+  const eth = await readEthBalance();
+  if(eth === null){ txt.textContent=T('无法读取 ETH 余额'); line.classList.add('bad'); return; }
+  if(eth < MIN_GAS_ETH){
+    txt.textContent=T('Gas 不足')+' · '+eth.toFixed(4)+' ETH';
+    line.classList.add('bad');
+  }else{
+    txt.textContent=T('Gas')+' · '+eth.toFixed(4)+' ETH';
+    line.classList.add('ok');
+  }
+}
+
+async function doTrade(){
   const v=parseFloat($('amount').value)||0;
   if(v<=0){ toast('请输入数量',true); return; }
   if(state.frozen){ toast('账户已冻结，无法交易',true); return; }
+  if(!await tradeGate()) return;
   if(state.mode==='buy'){
     if(v>state.usdc){ toast('USDC 余额不足',true); return; }
     state.usdc-=v; state.lusd+=v;
@@ -1807,7 +1893,7 @@ function renderWallet(){
 }
 async function loadWalletInfo(){
   $('wLusd').textContent='—'; $('wEth').textContent='—';
-  if(!connectedAddr||readOnly||!activeWallet) return;
+  if(!connectedAddr||readOnly||!activeWallet){ refreshGasLine(); return; }
   const p=activeWallet.provider;
   try{
     const hex=await p.request({method:'eth_getBalance',params:[connectedAddr,'latest']});
@@ -1819,6 +1905,7 @@ async function loadWalletInfo(){
     const v=BigInt(r||'0x0');
     $('wLusd').textContent=(Number(v)/1e18).toFixed(2);
   }catch(_){}
+  refreshGasLine();
 }
 function copyWalletAddr(){
   if(!connectedAddr) return;
@@ -1853,6 +1940,7 @@ async function switchToBase(){
 function disconnectWallet(){
   connectedAddr=null; activeWallet=null; readOnly=false; chainId='';
   updateConnectBtn(); persistWallet(); closeWalletSheet(); renderWallet();
+  refreshGasLine();
   if($('toast')) toast('已断开连接');
 }
 
