@@ -1071,7 +1071,7 @@
       <button id="segSell" onclick="setMode('sell')">Sell</button>
     </div>
     <div class="fld">
-      <div class="l"><span id="payLab">支付</span><span id="payBal">余额 1,000.00</span></div>
+      <div class="l"><span id="payLab">支付</span><span id="payBal">余额 —</span></div>
       <div class="ir"><input id="amount" type="number" value="100" oninput="quote()"><span class="u" id="paySym">USDC</span></div>
     </div>
     <div class="fld">
@@ -1187,7 +1187,7 @@ const I18N = {
  "卖出 LUSD": "Sell LUSD",
  "卖出": "Sell",
  "支付": "Pay",
- "余额 1,000.00": "Balance 1,000.00",
+ "余额 —": "Balance —",
  "获得": "Receive",
  "余额 0.00": "Balance 0.00",
  "无滑点": "No slippage",
@@ -1323,7 +1323,7 @@ const I18N = {
  "卖出 LUSD": "Bán LUSD",
  "卖出": "Bán",
  "支付": "Thanh toán",
- "余额 1,000.00": "Số dư 1.000,00",
+ "余额 —": "Số dư —",
  "获得": "Nhận được",
  "余额 0.00": "Số dư 0,00",
  "无滑点": "Không trượt giá",
@@ -1579,7 +1579,11 @@ document.addEventListener('click', e=>{
 
 const fmt = n => Number(n).toLocaleString(localeOf(),{minimumFractionDigits:2,maximumFractionDigits:2});
 const ADDR = '0x0d26b3f7c8a1e4d29b6f0c3e5d7a1f2c4e6deb07';
-const state = { usdc:1000, lusd:0, frozen:false, mode:'buy' };
+const state = { usdc:0, lusd:0, frozen:false, mode:'buy' };
+/* 是否已从链上同步过余额（避免刷新覆盖本地模拟的增减） */
+let balSynced = false;
+/* Base 上的 USDC（Circle 原生），用于读取真实余额 */
+const USDC_ADDR = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 
 /* tabs */
 document.querySelectorAll('#tabs button').forEach(btn=>{
@@ -1697,8 +1701,9 @@ function setMode(m){
   $('recvSym').textContent = m==='buy'?'LUSD':'USDC';
   $('goBtn').className = 'go ' + (m==='buy'?'b':'s');
   $('goBtn').textContent = m==='buy'?T('买入 LUSD'):T('卖出 LUSD');
-  $('payBal').textContent = T('余额 ')+fmt(m==='buy'?state.usdc:state.lusd)+(m==='buy'?' USDC':' LUSD');
-  $('recvBal').textContent = T('余额 ')+fmt(m==='buy'?state.lusd:state.usdc)+(m==='buy'?' LUSD':' USDC');
+  const bals = (v,sym) => connectedAddr ? fmt(v)+' '+sym : '—';
+  $('payBal').textContent = T('余额 ')+bals(m==='buy'?state.usdc:state.lusd, m==='buy'?'USDC':'LUSD');
+  $('recvBal').textContent = T('余额 ')+bals(m==='buy'?state.lusd:state.usdc, m==='buy'?'LUSD':'USDC');
   quote();
 }
 function quote(){ const v=parseFloat($('amount').value)||0; $('recv').value=fmt(v); }
@@ -1912,9 +1917,19 @@ async function loadWalletInfo(){
   try{
     const data='0x70a08231'+connectedAddr.slice(2).toLowerCase().padStart(64,'0');
     const r=await p.request({method:'eth_call',params:[{to:ADDR,data},'latest']});
-    const v=BigInt(r||'0x0');
-    $('wLusd').textContent=(Number(v)/1e18).toFixed(2);
+    const v=Number(BigInt(r||'0x0'))/1e18;
+    $('wLusd').textContent=v.toFixed(2);
+    if(!balSynced) state.lusd=v;
   }catch(_){}
+  if(!balSynced){
+    try{
+      const data='0x70a08231'+connectedAddr.slice(2).toLowerCase().padStart(64,'0');
+      const r=await p.request({method:'eth_call',params:[{to:USDC_ADDR,data},'latest']});
+      state.usdc=Number(BigInt(r||'0x0'))/1e18;
+    }catch(_){}
+    balSynced=true;
+    try{ setMode(state.mode); }catch(_){}
+  }
   refreshGasLine();
 }
 function copyWalletAddr(){
@@ -1949,6 +1964,7 @@ async function switchToBase(){
 }
 function disconnectWallet(){
   connectedAddr=null; activeWallet=null; readOnly=false; chainId='';
+  state.usdc=0; state.lusd=0; balSynced=false;
   updateConnectBtn(); persistWallet(); closeWalletSheet(); renderWallet();
   refreshGasLine();
   if($('toast')) toast('已断开连接');
