@@ -174,6 +174,14 @@
   .fold.open{max-height:640px}
   .about{font-size:13px;line-height:1.7;color:#c3c9d4}
   .about b{color:#fff}
+  .about p{margin:0 0 11px}
+  .about p:last-of-type{margin-bottom:0}
+  .kf-t{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+    font-weight:700;margin:18px 0 10px}
+  .kf{display:flex;flex-direction:column;gap:9px}
+  .kf-i{background:#141619;border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+  .kf-i b{display:block;font-size:12.5px;color:#fff;margin-bottom:3px;font-weight:600}
+  .kf-i span{display:block;font-size:11.5px;line-height:1.62;color:var(--muted)}
   .socials{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
   .soc{display:flex;flex-direction:column;align-items:center;gap:7px;background:#1a1d23;border:1px solid var(--line);
     border-radius:14px;padding:13px 6px;font-size:11.5px;color:var(--text);cursor:pointer;
@@ -454,9 +462,13 @@
     <div class="h3">About</div>
     <div class="card" style="padding:16px">
       <div class="about">
-        <b>LUSD</b> 是由彩票平台发行的美元计价稳定币，采用 <b>1 LUSD = 1 USDC</b> 的全额储备模式，<b>价格恒定锚定 $1.00</b>，不随市场买卖波动。<br><br>
-        用户将 USDC 存入合约即 1:1 铸造 LUSD，随时可 1:1 赎回为 USDC，储备金链上可查。LUSD 可在支持的交易所与链上自由流通、兑换任意代币；平台内消费彩票时另按比例发放不可转让的赠券（LVCH），赠券仅可抵扣消费、不可提现。<br><br>
-        储备金链上可查，审计报告将于主网上线前公布。本代币不承诺任何收益或升值，请勿以投资目的持有。
+        <p>LUSDT is designed around the goal of maintaining a value reference to the US dollar. Its intended 1:1 relationship provides a simple framework for understanding its target value in digital financial environments.</p>
+        <p>Actual market prices may fluctuate, and the target value should not be interpreted as a guarantee of redemption or market price stability.</p>
+        <div class="kf-t">Key Features</div>
+        <div class="kf">
+          <div class="kf-i"><b>USD Reference</b><span>Designed with a target value of 1 LUSDT = 1 USD.</span></div>
+          <div class="kf-i"><b>Digital Transfer</b><span>Intended for digital value transfers on supported blockchain networks, subject to actual platform capabilities.</span></div>
+        </div>
       </div>
       <div class="socials">
         <a class="soc" href="../">
