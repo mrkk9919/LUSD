@@ -311,6 +311,35 @@
   .p2p-btn.sell{background:var(--pink);color:#fff}
   .p2p-note{font-size:10.5px;color:var(--dim);line-height:1.65;padding:14px 2px 4px}
 
+  .pay-lbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);
+    font-weight:700;margin:18px 0 9px}
+  .pay-hint{font-size:10.5px;color:var(--dim);margin-top:9px;line-height:1.6}
+  .p2p-methods .chipx.add{border-style:dashed;color:var(--muted)}
+  .cardlist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+  .cardlist:empty{display:none}
+  .citem{display:flex;align-items:center;gap:10px;background:#14161a;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px}
+  .citem .cb{width:32px;height:32px;border-radius:7px;background:#1f2530;display:flex;
+    align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#9db0cb;flex:none}
+  .citem .ci{flex:1;min-width:0}
+  .citem .cn{font-size:12.5px;font-weight:600}
+  .citem .cm{font-size:10.5px;color:var(--dim);margin-top:2px}
+  .citem .cd{color:var(--pink);font-size:17px;cursor:pointer;padding:0 4px;line-height:1}
+  .cf{margin-bottom:12px}
+  .cfl{font-size:10.5px;color:var(--dim);margin-bottom:6px}
+  .cf input,.cf select{width:100%;background:#14161a;border:1px solid var(--line);border-radius:9px;
+    padding:11px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;
+    -webkit-appearance:none;appearance:none;box-sizing:border-box}
+  .cf select{background-image:linear-gradient(45deg,transparent 50%,#6b7688 50%),
+    linear-gradient(135deg,#6b7688 50%,transparent 50%);
+    background-position:calc(100% - 16px) 19px,calc(100% - 11px) 19px;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .cf input:focus,.cf select:focus{border-color:rgba(183,255,26,.45)}
+  .cf-row{display:flex;gap:10px}
+  .p2p-save{width:100%;margin-top:4px;background:var(--green);color:#0a0b0d;border:0;border-radius:11px;
+    padding:13px 0;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+  .cs-note{font-size:10px;color:var(--dim);line-height:1.6;margin-top:10px;text-align:center}
+
   /* risk */
   .disclaimer{font-size:13px;color:var(--muted);line-height:1.65;margin:2px 0 18px}
   .riskstats{display:flex;gap:14px;margin-bottom:24px}
@@ -761,11 +790,9 @@
       </div>
     </div>
 
-    <div class="p2p-methods">
-      <span class="chipx on" onclick="pickPay(this)">Bank transfer</span>
-      <span class="chipx" onclick="pickPay(this)">Wise</span>
-      <span class="chipx" onclick="pickPay(this)">Alipay</span>
-    </div>
+    <div class="pay-lbl">Payment method</div>
+    <div class="p2p-methods" id="payMethods"></div>
+    <div class="pay-hint" id="payHint">绑定越南银行卡后可用于 P2P 付款</div>
 
     <div class="h3" style="display:flex;justify-content:space-between;align-items:baseline">
       <span>Verified merchants</span>
@@ -788,6 +815,33 @@
 </div>
 
 <!-- trade sheet -->
+<div class="sheet" id="cardSheet">
+  <div class="sheetbox">
+    <div class="sheet-h"><span class="t">Payment methods</span><span class="x" onclick="closeCardSheet()">×</span></div>
+    <div class="cardlist" id="cardList"></div>
+    <div class="cf">
+      <div class="cfl">Bank</div>
+      <select id="cardBank"></select>
+    </div>
+    <div class="cf">
+      <div class="cfl">Card number</div>
+      <input id="cardNo" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000" oninput="fmtCard(this)">
+    </div>
+    <div class="cf-row">
+      <div class="cf" style="flex:1">
+        <div class="cfl">Cardholder name</div>
+        <input id="cardName" autocomplete="off" placeholder="NGUYEN VAN A">
+      </div>
+      <div class="cf" style="width:104px;flex:none">
+        <div class="cfl">Expiry</div>
+        <input id="cardExp" inputmode="numeric" autocomplete="off" placeholder="MM/YY" oninput="fmtExp(this)">
+      </div>
+    </div>
+    <button class="p2p-save" onclick="saveCard()">Bind card</button>
+    <p class="cs-note">演示环境：卡号仅保留后四位用于展示，完整号码不会保存或上传。</p>
+  </div>
+</div>
+
 <div class="sheet" id="tradeSheet">
   <div class="sheetbox">
     <div class="sheet-h"><span class="t" id="sheetTitle">买入 LUSD</span><span class="x" onclick="closeSheet()">×</span></div>
@@ -1506,16 +1560,97 @@ function calcP2P(){
 
 function p2pOrder(i){
   const o=P2P[p2pMode][i];
-  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4));
+  const c=CARDS[paySel];
+  if(CARDS.length && !c){ toast('请先选择支付方式',true); return; }
+  toast('P2P 将于 14 小时后开放 · '+o.n+' @ '+o.price.toFixed(4)+(c?' · '+c.s+' ····'+c.l4:''));
 }
 
-function pickPay(el){
-  document.querySelectorAll('.p2p-methods .chipx').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
+/* ---- 越南银行卡绑定 ---- */
+const VN_BANKS=[
+  ['Vietcombank','VCB'],['Techcombank','TCB'],['BIDV','BIDV'],['VietinBank','CTG'],
+  ['Agribank','AGR'],['VPBank','VPB'],['ACB','ACB'],['MB Bank','MBB'],['Sacombank','STB'],
+  ['TPBank','TPB'],['VIB','VIB'],['SHB','SHB'],['Eximbank','EIB'],['HDBank','HDB'],
+  ['OCB','OCB'],['MSB','MSB'],['SeABank','SSB'],['LPBank','LPB'],['Nam A Bank','NAB'],
+  ['PVcomBank','PVC']
+];
+const CARD_KEY='lusd_cards';
+let CARDS=[];
+try{ CARDS=JSON.parse(localStorage.getItem(CARD_KEY)||'[]')||[]; }catch(_){ CARDS=[]; }
+let paySel=0;
+
+function initBanks(){
+  const sel=$('cardBank'); if(!sel) return;
+  sel.innerHTML=VN_BANKS.map(([n,c])=>'<option value="'+n+'|'+c+'">'+n+' ('+c+')</option>').join('');
+}
+
+function renderPay(){
+  const box=$('payMethods'); if(!box) return;
+  let html='';
+  CARDS.forEach((c,i)=>{
+    html+='<span class="chipx'+(i===paySel?' on':'')+'" onclick="pickCard('+i+')">'+c.s+' ···· '+c.l4+'</span>';
+  });
+  html+='<span class="chipx add" onclick="openCardSheet()">+ Add card</span>';
+  box.innerHTML=html;
+  const hint=$('payHint');
+  if(hint){ hint.style.display = CARDS.length ? 'none' : 'block'; }
+}
+
+function pickCard(i){ paySel=i; renderPay(); }
+
+function openCardSheet(){
+  initBanks(); renderCardList();
+  $('cardSheet').classList.add('show');
+}
+function closeCardSheet(){ $('cardSheet').classList.remove('show'); }
+
+function renderCardList(){
+  const box=$('cardList'); if(!box) return;
+  box.innerHTML=CARDS.map((c,i)=>
+    '<div class="citem"><div class="cb">'+c.s+'</div>'
+    +'<div class="ci"><div class="cn">'+c.b+'</div>'
+    +'<div class="cm">'+c.h+' · '+c.e+' · ····'+c.l4+'</div></div>'
+    +'<span class="cd" onclick="delCard('+i+')">×</span></div>').join('');
+}
+function delCard(i){
+  const c=CARDS[i];
+  CARDS.splice(i,1);
+  if(paySel>=CARDS.length) paySel=Math.max(0,CARDS.length-1);
+  saveCards(); renderCardList(); renderPay();
+  if(c) toast('已解绑 '+c.s+' ···· '+c.l4);
+}
+function saveCards(){ try{ localStorage.setItem(CARD_KEY, JSON.stringify(CARDS)); }catch(_){} }
+
+function fmtCard(el){
+  const v=el.value.replace(/\D/g,'').slice(0,19);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExp(el){
+  let v=el.value.replace(/\D/g,'').slice(0,4);
+  if(v.length>2) v=v.slice(0,2)+'/'+v.slice(2);
+  el.value=v;
+}
+
+function saveCard(){
+  const raw=$('cardBank').value.split('|');
+  const bank=raw[0], code=raw[1];
+  const no=$('cardNo').value.replace(/\s/g,'');
+  const name=$('cardName').value.trim();
+  const exp=$('cardExp').value.trim();
+  if(no.length<13||no.length>19){ toast('卡号格式不正确',true); return; }
+  if(!name){ toast('请填写持卡人姓名',true); return; }
+  if(!/^\d{2}\/\d{2}$/.test(exp)){ toast('有效期格式为 MM/YY',true); return; }
+  const mm=parseInt(exp.slice(0,2),10);
+  if(mm<1||mm>12){ toast('月份不正确',true); return; }
+  CARDS.push({b:bank, s:code, l4:no.slice(-4), h:name.toUpperCase(), e:exp});
+  paySel=CARDS.length-1;
+  saveCards(); renderCardList(); renderPay();
+  $('cardNo').value=''; $('cardName').value=''; $('cardExp').value='';
+  toast('已绑定 '+code+' ···· '+no.slice(-4));
 }
 
 drawCandles(); drawLiqBars(); updateConnectBtn(); restoreWallet();
 renderHoldings(); renderTx(); renderLiq(); renderP2P(); calcP2P();
+initBanks(); renderPay();
 </script>
 </body>
 </html>
