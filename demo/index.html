@@ -2154,7 +2154,7 @@ function renderBankPick(){
   var b=bankOf(bankSel)||VN_BANKS[0]; bankSel=b.c;
   var img=$('bankPickLogo'), nm=$('bankPickName');
   if(img){ var u=BANK_LOGO[b.c]||''; img.src=u; img.style.visibility=u?'visible':'hidden'; }
-  if(nm) nm.textContent=b.n+' · '+b.c;
+  if(nm) nm.textContent = (b.n===b.c) ? b.n : b.n+' · '+b.c;
 }
 function openBankPicker(){ renderBankList(); $('bankSheet').classList.add('show'); }
 function closeBankPicker(){ $('bankSheet').classList.remove('show'); }
